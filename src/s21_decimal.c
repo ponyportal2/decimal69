@@ -12,23 +12,35 @@
 int main() {
   char a[1024] = "8326731548612467647832";
   char b[1024] = "8326731548612467647833";
-  char result[1024][1024] = {0};
-  // for (int i = 0; i < 1024; i++) {
-  //   char* result = calloc(1024, sizeof(char));
-  // }
+  // char result[1024][1024] = {0};
+
+  // RESULT ALLOC:
+  // -------------
+  char** result = calloc(1024, sizeof(char*));
+  for (int i = 0; i < 1024; i++) {
+    result[i] = calloc(1024, sizeof(char));
+  }
 
   decAdd(a, b, result);
-  printf("\nDEBUG\n");
+  // printf("\nDEBUG\n");
+
   int i = 0;
   while (strlen(result[i]) > 0) {
     printf("[%s]", result[i]);
     i++;
   }
 
+  // FREEING:
+  // --------
+  for (int i = 0; i < 1024; i++) {
+    free(result[i]);
+  }
+  free(result);
+
   return 0;
 }
 
-void decAdd(char a[1024], char b[1024], char result[][1024]) {
+void decAdd(char* a, char* b, char** result) {
   bool aEnded = false;
   bool bEnded = false;
   int i = 0;
