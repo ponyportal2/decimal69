@@ -18,7 +18,7 @@ int main() {
   // -------------
   char** result = calloc(1024, sizeof(char*));
   for (int i = 0; i < 1024; i++) {
-    result[i] = calloc(1024, sizeof(char));
+    result[i] = calloc(a, sizeof(char));
   }
 
   decAdd(a, b, result);
