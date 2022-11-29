@@ -7,40 +7,41 @@
 #include <string.h>
 
 #define sint char
-#define MAXLINE 2048
+
+#define AB_SIZE 256
+#define RES_SIZE 1024
 
 int main() {
-  char a[1024] = "8326731548612467647832";
-  char b[1024] = "8326731548612467647833";
-  // char result[1024][1024] = {0};
+  char a[AB_SIZE] = "8326731548612467647832";
+  char b[AB_SIZE] = "8326731548612467647833";
+  char result[RES_SIZE][RAZR_SIZE] = {0};
 
   // RESULT ALLOC:
   // -------------
-  char** result = calloc(1024, sizeof(char*));
-  for (int i = 0; i < 1024; i++) {
-    result[i] = calloc(a, sizeof(char));
-  }
+  // char** result = calloc(1024, sizeof(char*));
+  // for (int i = 0; i < 1024; i++) {
+  //   result[i] = calloc(1024, sizeof(char));
+  // }
 
   decAdd(a, b, result);
-  // printf("\nDEBUG\n");
 
   int i = 0;
-  while (strlen(result[i]) > 0) {
-    printf("[%s]", result[i]);
+  while (strlen(get(result, i)) > 0) {
+    printf("[%s]", get(result, i));
     i++;
   }
 
   // FREEING:
   // --------
-  for (int i = 0; i < 1024; i++) {
-    free(result[i]);
-  }
-  free(result);
+  // for (int i = 0; i < 1024; i++) {
+  //   free(result[i]);
+  // }
+  // free(result);
 
   return 0;
 }
 
-void decAdd(char* a, char* b, char** result) {
+void decAdd(char* a, char* b, char result[][RAZR_SIZE]) {
   bool aEnded = false;
   bool bEnded = false;
   int i = 0;
@@ -54,8 +55,8 @@ void decAdd(char* a, char* b, char** result) {
       // printf("[%c][%c]\n", a[i], b[i]);
       sint current = (a[i] - '0') + (b[i] - '0');
       itoa((int)current, tempForItoa, 10);
-      strcpy(result[j], tempForItoa);
-      printf("[%s]\n", result[j]);
+      strcpy(get(result, j), tempForItoa);
+      printf("[%s]\n", get(result, j));
     }
     j++;
     i++;
@@ -80,12 +81,21 @@ void itoa(long long num, char* src, int radix) {
 }
 
 void reverse(char* string) {
-  char temp[MAXLINE];
+  char temp[MAXLINE_FOR_REVERSE];
   strcpy(temp, string);
   int length = strlen(string);
   int i;
   for (i = 0; i < length; i++) string[i] = temp[length - i - 1];
   string[i] = '\0';
+}
+
+char* get(char result[][RAZR_SIZE], int i) {
+  if (i < RAZR_SIZE) {
+    return (char*)result[i];
+  } else {
+    perror("OVERFLOW");
+    return NULL;
+  }
 }
 
 // int s21_atoi(char* str) {
