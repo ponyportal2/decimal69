@@ -25,14 +25,23 @@ int main() {
     result[i] = calloc(RAZR_SIZE, sizeof(char));
   }
 
-  decAddFirstStep(a, b, result);
-
+  decimAddFirstStep(a, b, result);
   int resultSize = sizeDetector(result);
-
-  decAddSecondStep(result);
-
+  decimAddSecondStep(result);
   reverseCharMatrix(result, resultSize);
   printer(result);
+
+  strcpy(a, "87584758623475897345878784953789");
+  strcpy(b, "4623764782364762374");
+  reverse(a);
+  reverse(b);
+
+  decimSubFirstStep(a, b, result);
+  resultSize = sizeDetector(result);
+  decimSubSecondStep(result);
+  reverseCharMatrix(result, resultSize);
+  printer(result);
+
   // FREEING:
   // --------
   for (int i = 0; i < 1024; i++) {
@@ -43,7 +52,7 @@ int main() {
   return 0;
 }
 
-void decAddFirstStep(char* a, char* b, char** result) {
+void decimAddFirstStep(char* a, char* b, char** result) {
   bool aEnded = false;
   bool bEnded = false;
   int i = 0;
@@ -51,7 +60,7 @@ void decAddFirstStep(char* a, char* b, char** result) {
   char* tempForItoa = calloc(1024, sizeof(char));
   bool whileBreak = false;
   while (whileBreak == false) {
-    printf("a:[%c], b:[%c]\n", a[i], b[i]);
+    // printf("a:[%c], b:[%c]\n", a[i], b[i]);
     if (a[i] == '\0') aEnded = true;
     if (b[i] == '\0') bEnded = true;
     if (aEnded == true && bEnded == true) {
@@ -75,7 +84,59 @@ void decAddFirstStep(char* a, char* b, char** result) {
   free(tempForItoa);
 }
 
-void decAddSecondStep(char** result) {
+void decimAddSecondStep(char** result) {
+  int i = 0;
+  char* tempForItoa1 = calloc(1024, sizeof(char));
+  char* tempForItoa2 = calloc(1024, sizeof(char));
+  while (strlen(get(result, i)) > 0) {
+    if (atoi(result[i]) > 9) {
+      itoa(atoi(result[i + 1]) + 1, tempForItoa1, 10);
+      strcpy(result[i + 1], tempForItoa1);
+      minusTen(result[i]);
+      // itoa(atoi(result[i]) - 10, tempForItoa2, 10);
+      // strcpy(result[i], tempForItoa2);
+    }
+
+    i++;
+  }
+  free(tempForItoa1);
+  free(tempForItoa2);
+}
+
+void decimSubFirstStep(char* a, char* b, char** result) {
+  bool aEnded = false;
+  bool bEnded = false;
+  int i = 0;
+  int j = 0;
+  char* tempForItoa = calloc(1024, sizeof(char));
+  bool whileBreak = false;
+  while (whileBreak == false) {
+    // printf("a:[%c], b:[%c]\n", a[i], b[i]);
+    if (a[i] == '\0') aEnded = true;
+    if (b[i] == '\0') bEnded = true;
+    if (aEnded == true && bEnded == true) {
+      whileBreak = true;
+    }
+    sint current = 0;
+    if (aEnded != true && bEnded != true) {
+      current = (a[i] - '0') - (b[i] - '0');
+      printf("[%i]", current);
+      place(current, result, tempForItoa, j);
+      // printf("[%s]\n", get(result, j));
+    } else if (aEnded) {
+      current = (b[i] - '0');
+      place(current, result, tempForItoa, j);
+    } else if (bEnded) {
+      current = (a[i] - '0');
+      place(current, result, tempForItoa, j);
+    }
+    j++;
+    i++;
+  }
+  free(tempForItoa);
+}
+
+void decimSubSecondStep(char** result) {
   int i = 0;
   char* tempForItoa1 = calloc(1024, sizeof(char));
   char* tempForItoa2 = calloc(1024, sizeof(char));
@@ -173,6 +234,7 @@ void printer(char** result) {
     printf("%s", get(result, i));
     i++;
   }
+  printf("\n");
 }
 
 // HOMYACHU:

@@ -4,8 +4,8 @@
 
 void minusTen(char* input);
 void reverseString(char* inputArr);
-void decAddFirstStep(char* a, char* b, char** result);
-void decAddSecondStep(char** result);
+void decimAddFirstStep(char* a, char* b, char** result);
+void decimAddSecondStep(char** result);
 void reverse(char* string);
 void itoa(long long num, char* src, int radix);
 char* get(char** input, int i);
@@ -13,3 +13,5 @@ void printer(char** result);
 int sizeDetector(char** result);
 void reverseCharMatrix(char** inputArr, int n);
 void place(sint current, char** result, char* tempForItoa, int j);
+void decimSubFirstStep(char* a, char* b, char** result);
+void decimSubSecondStep(char** result);
