@@ -27,6 +27,8 @@ int main() {
 
   int resultSize = sizeDetector(result);
 
+  decAddSecondStep(result);
+
   reverseCharMatrix(result, resultSize);
   printer(result);
   // FREEING:
@@ -39,7 +41,7 @@ int main() {
   return 0;
 }
 
-void decAdd(char* a, char* b, char** result) {
+void decAddFirstStep(char* a, char* b, char** result) {
   bool aEnded = false;
   bool bEnded = false;
   int i = 0;
@@ -69,6 +71,13 @@ void decAdd(char* a, char* b, char** result) {
     i++;
   }
   free(tempForItoa);
+}
+
+void decAddSecondStep(char** result) {
+  int i = 0;
+  while (result[i] != '\0') {
+    decAddFirstStep(result[i], result[i + 1], result);
+  }
 }
 
 void place(sint current, char** result, char* tempForItoa, int j) {
