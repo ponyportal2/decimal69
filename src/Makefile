@@ -1,8 +1,14 @@
 tezt:
-	gcc -Wextra -Wall -Werror *.c -lm
+	gcc -Wextra -Wall -Werror *.c  -lm
 	cppcheck *.c
 	python3 ../linters/cpplint.py --extensions=c *.c
 	valgrind --leak-check=yes -q ./a.out
+
+teztmac:
+	gcc -Wextra -Wall -Werror *.c  -lm
+	cppcheck *.c
+	python3 ../linters/cpplint.py --extensions=c *.c
+	./a.out
 
 tezt_stat:
 	gcc -Wextra -Wall -Werror *.c -lm

@@ -6,62 +6,74 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define sint char
-
 #define AB_SIZE 256
 #define RES_SIZE 1024
 
 int main() {
-  char a[AB_SIZE] = "8326731548612467647832";
-  char b[AB_SIZE] = "8326731548612467647833";
-  char result[RES_SIZE][RAZR_SIZE] = {0};
+  // char a[AB_SIZE] = "8326731548612467647832";
+  // char b[AB_SIZE] = "8326731548612467647833";
+  char a[AB_SIZE] = "1111111111111111111111";
+  char b[AB_SIZE] = "19";
+  // char result[RES_SIZE][RAZR_SIZE] = {0};
 
   // RESULT ALLOC:
   // -------------
-  // char** result = calloc(1024, sizeof(char*));
-  // for (int i = 0; i < 1024; i++) {
-  //   result[i] = calloc(1024, sizeof(char));
-  // }
+  char** result = calloc(RES_SIZE, sizeof(char*));
+  for (int i = 0; i < RES_SIZE; i++) {
+    result[i] = calloc(RAZR_SIZE, sizeof(char));
+  }
 
   decAdd(a, b, result);
 
-  int i = 0;
-  while (strlen(get(result, i)) > 0) {
-    printf("[%s]", get(result, i));
-    i++;
-  }
+  int resultSize = sizeDetector(result);
 
+  reverseCharMatrix(result, resultSize);
+  printer(result);
   // FREEING:
   // --------
-  // for (int i = 0; i < 1024; i++) {
-  //   free(result[i]);
-  // }
-  // free(result);
+  for (int i = 0; i < 1024; i++) {
+    free(result[i]);
+  }
+  free(result);
 
   return 0;
 }
 
-void decAdd(char* a, char* b, char result[][RAZR_SIZE]) {
+void decAdd(char* a, char* b, char** result) {
   bool aEnded = false;
   bool bEnded = false;
   int i = 0;
   int j = 0;
   char* tempForItoa = calloc(1024, sizeof(char));
-  while (aEnded != true && bEnded != true) {
+  bool whileBreak = false;
+  while (whileBreak == false) {
+    printf("a:[%c], b:[%c]\n", a[i], b[i]);
     if (a[i] == '\0') aEnded = true;
     if (b[i] == '\0') bEnded = true;
+    if (aEnded == true && bEnded == true) {
+      whileBreak = true;
+    }
+    sint current = 0;
     if (aEnded != true && bEnded != true) {
-      // printf("\nDEBUG\n");
-      // printf("[%c][%c]\n", a[i], b[i]);
-      sint current = (a[i] - '0') + (b[i] - '0');
-      itoa((int)current, tempForItoa, 10);
-      strcpy(get(result, j), tempForItoa);
-      printf("[%s]\n", get(result, j));
+      current = (a[i] - '0') + (b[i] - '0');
+      place(current, result, tempForItoa, j);
+      // printf("[%s]\n", get(result, j));
+    } else if (aEnded) {
+      current = (b[i] - '0');
+      place(current, result, tempForItoa, j);
+    } else if (bEnded) {
+      current = (a[i] - '0');
+      place(current, result, tempForItoa, j);
     }
     j++;
     i++;
   }
   free(tempForItoa);
+}
+
+void place(sint current, char** result, char* tempForItoa, int j) {
+  itoa((int)current, tempForItoa, 10);
+  strcpy(get(result, j), tempForItoa);
 }
 
 void itoa(long long num, char* src, int radix) {
@@ -89,7 +101,7 @@ void reverse(char* string) {
   string[i] = '\0';
 }
 
-char* get(char result[][RAZR_SIZE], int i) {
+char* get(char** result, int i) {
   if (i < RAZR_SIZE) {
     return (char*)result[i];
   } else {
@@ -97,6 +109,38 @@ char* get(char result[][RAZR_SIZE], int i) {
     return NULL;
   }
 }
+
+void reverseCharMatrix(char** inputArr, int n) {
+  int i = 0;
+  while (((n - i - 1) - i) > 0) {
+    char tempStr[1024] = {0};
+    strcpy(tempStr, inputArr[i]);
+    strcpy(inputArr[i], inputArr[n - i - 1]);
+    strcpy(inputArr[n - i - 1], tempStr);
+    i++;
+  }
+}
+
+int sizeDetector(char** result) {
+  int i = 0;
+  while (strlen(get(result, i)) > 0) {
+    i++;
+  }
+  return i;
+}
+
+void printer(char** result) {
+  int i = 0;
+  while (strlen(get(result, i)) > 0) {
+    printf("[%s]", get(result, i));
+    i++;
+  }
+}
+
+// HOMYACHU:
+
+// printf("\nDEBUG\n");
+// printf("[%c][%c]\n", a[i], b[i]);
 
 // int s21_atoi(char* str) {
 //   int length = s21_strlen(str);
