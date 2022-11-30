@@ -2,7 +2,10 @@
 #define MAXLINE_FOR_REVERSE 2048
 #define sint char
 
+void minusTen(char* input);
+void reverseString(char* inputArr);
 void decAddFirstStep(char* a, char* b, char** result);
+void decAddSecondStep(char** result);
 void reverse(char* string);
 void itoa(long long num, char* src, int radix);
 char* get(char** input, int i);

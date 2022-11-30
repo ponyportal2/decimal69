@@ -12,8 +12,10 @@
 int main() {
   // char a[AB_SIZE] = "8326731548612467647832";
   // char b[AB_SIZE] = "8326731548612467647833";
-  char a[AB_SIZE] = "1111111111111111111111";
-  char b[AB_SIZE] = "19";
+  char a[AB_SIZE] = "87584758623475897345878784953789";
+  char b[AB_SIZE] = "4623764782364762374";
+  reverse(a);
+  reverse(b);
   // char result[RES_SIZE][RAZR_SIZE] = {0};
 
   // RESULT ALLOC:
@@ -23,7 +25,7 @@ int main() {
     result[i] = calloc(RAZR_SIZE, sizeof(char));
   }
 
-  decAdd(a, b, result);
+  decAddFirstStep(a, b, result);
 
   int resultSize = sizeDetector(result);
 
@@ -75,9 +77,26 @@ void decAddFirstStep(char* a, char* b, char** result) {
 
 void decAddSecondStep(char** result) {
   int i = 0;
-  while (result[i] != '\0') {
-    decAddFirstStep(result[i], result[i + 1], result);
+  char* tempForItoa1 = calloc(1024, sizeof(char));
+  char* tempForItoa2 = calloc(1024, sizeof(char));
+  while (strlen(get(result, i)) > 0) {
+    if (atoi(result[i]) > 9) {
+      itoa(atoi(result[i + 1]) + 1, tempForItoa1, 10);
+      strcpy(result[i + 1], tempForItoa1);
+      minusTen(result[i]);
+      // itoa(atoi(result[i]) - 10, tempForItoa2, 10);
+      // strcpy(result[i], tempForItoa2);
+    }
+
+    i++;
   }
+  free(tempForItoa1);
+  free(tempForItoa2);
+}
+
+void minusTen(char* input) {
+  input[0] = input[1];
+  input[1] = '\0';
 }
 
 void place(sint current, char** result, char* tempForItoa, int j) {
@@ -130,6 +149,16 @@ void reverseCharMatrix(char** inputArr, int n) {
   }
 }
 
+void reverseString(char* inputArr) {
+  int i = 0;
+  int n = strlen(inputArr);
+  while (inputArr[i] != '\0') {
+    char tempChar = inputArr[i];
+    inputArr[i] = inputArr[n - i - 1];
+    inputArr[n - i - 1] = tempChar;
+  }
+}
+
 int sizeDetector(char** result) {
   int i = 0;
   while (strlen(get(result, i)) > 0) {
@@ -141,7 +170,7 @@ int sizeDetector(char** result) {
 void printer(char** result) {
   int i = 0;
   while (strlen(get(result, i)) > 0) {
-    printf("[%s]", get(result, i));
+    printf("%s", get(result, i));
     i++;
   }
 }
