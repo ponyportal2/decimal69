@@ -47,9 +47,9 @@ int main() {
   // FREEING:
   // --------
   for (int i = 0; i < 1024; i++) {
-    free(result[i]);
+    if (result[i]) free(result[i]);
   }
-  free(result);
+  if (result) free(result);
 
   return 0;
 }
@@ -83,7 +83,7 @@ void decimAddFirstStep(char* a, char* b, char** result) {
     j++;
     i++;
   }
-  free(tempForItoa);
+  if (tempForItoa) free(tempForItoa);
 }
 
 void decimAddSecondStep(char** result) {
@@ -106,8 +106,8 @@ void decimAddSecondStep(char** result) {
 
     i++;
   }
-  free(tempForItoa1);
-  // free(tempForItoa2);
+  if (tempForItoa1) free(tempForItoa1);
+  // if (tempForItoa2) free(tempForItoa2);
 }
 
 void minusTen(char* input) {
@@ -229,7 +229,7 @@ void printer(char** result) {
 //     j++;
 //     i++;
 //   }
-//   free(tempForItoa);
+//   if (tempForItoa) free(tempForItoa);
 // }
 
 // void decimSubSecondStep(char** result) {
@@ -246,8 +246,8 @@ void printer(char** result) {
 //     }
 //     i++;
 //   }
-//   free(tempForItoa1);
-//   free(tempForItoa2);
+//   if (tempForItoa1) free(tempForItoa1);
+//   if (tempForItoa2) free(tempForItoa2);
 // }
 
 // printf("[%s]\n", get(result, j));
@@ -307,8 +307,8 @@ void printer(char** result) {
 //   memcpy(abcd2, &ind2, 8);
 //   printf("%s", abcd2);
 
-//   free(abcd);
-//   free(abcd2);
+//   if (abcd) free(abcd);
+//   if (abcd2) free(abcd2);
 // }
 
 // itoa(atoi(result[i]) - 10, tempForItoa2, 10);
