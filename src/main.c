@@ -7,26 +7,32 @@ typedef struct {
     int bits[4];
 }s21_decimal;
 
-void DecimalToBinary(s21_decimal decimal, char binaryString[100]);
+void DecimalToBinary(char decimalStr[35], char binaryString[100]);
+void DecimalToString(s21_decimal decimal, char decimalString[100]);
 
 int main() {
     s21_decimal decimal;
     char binaryString[110] = {'\0'};
+    char decimalString[35] = {'\0'};
     decimal.bits[0] = 2122534536;
     decimal.bits[1] = 2122474454;
-    decimal.bits[2] = 2102234567;
-    DecimalToBinary(decimal, binaryString);
+    decimal.bits[2] = 202234567;
+    DecimalToString(decimal, decimalString);
+    DecimalToBinary(decimalString, binaryString);
     return 0;
 }
 
-void DecimalToBinary(s21_decimal decimal, char binaryString[100]) {
-    char decimalStr[35] = {'\0'};
+void DecimalToString(s21_decimal decimal, char decimalString[100]) {
     char binaryStack[110] = {'\0'};
     for (int i = 2; i >=0; i--) {
         char decimalPart[12] = {'\0'};
         sprintf(decimalPart, "%d", decimal.bits[i]);
-        strcat(decimalStr, decimalPart);
+        strcat(decimalString, decimalPart);
     }
+}
+
+void DecimalToBinary(char decimalStr[35], char binaryString[100]) {
+    char binaryStack[110] = {'\0'};
     int additive = 0;
     int next_additive;
     int k = 0;
