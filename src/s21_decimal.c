@@ -12,8 +12,13 @@ int main() {
   // char a[AB_SIZE] = "8326731548612467647832";
   // char b[AB_SIZE] = "8326731548612467647833";
 
-  char a[AB_SIZE] = "        875.84758623475897345878784953789";
-  char b[AB_SIZE] = "46237647823.64762374000000000000000000000";
+  char a[AB_SIZE] = "875.84758623475897345878784953789";
+  char b[AB_SIZE] = "46237647823.64762374";
+  // -----------------------WHAT IS NEEDED:------------------------
+  // --------------------------------------------------------------
+  // char a[AB_SIZE] = "        875.84758623475897345878784953789";
+  // char b[AB_SIZE] = "46237647823.64762374000000000000000000000";
+
   // char a[AB_SIZE] = "9";
   // char b[AB_SIZE] = "9";
   reverse(a);
@@ -237,14 +242,65 @@ void decimSecondStepSub(char** result) {
   int i = 0;
   char* tempForItoa = calloc(1024, sizeof(char));
   while (strlen(result[i]) > 0) {
-    // printf("\nDEBUG\n");
     if (atoi(result[i]) < 0) {
-      // printf("\nDEBUG\n");
       if (result[i + 1][0] != '\0') {
         itoa(atoi(result[i + 1]) - 1, tempForItoa);
         strcpy(result[i + 1], tempForItoa);
         itoa(10 + atoi(result[i]), tempForItoa);
         strcpy(result[i], tempForItoa);
+      }
+    }
+    i++;
+  }
+  if (tempForItoa) free(tempForItoa);
+}
+
+void deDot() {
+  char a[AB_SIZE] = "        875.84758623475897345878784953789";
+  char b[AB_SIZE] = "46237647823.64762374";
+  int finalDotPos = 0;
+  // -----------------------WHAT IS NEEDED:------------------------
+  // char a[AB_SIZE] = "        875.84758623475897345878784953789";
+  // char b[AB_SIZE] = "46237647823.64762374000000000000000000000";
+  // --------------------------------------------------------------
+  bool aEnded = false;
+  bool bEnded = false;
+  bool aDotFound = false;
+  bool bDotFound = false;
+  int i = 0;
+  char* tempForItoa = calloc(1024, sizeof(char));
+  bool whileBreak = false;
+  while (whileBreak == false) {
+    if (a[i] == '\0') {
+      aEnded = true;
+    } else if (a[i] == '.') {
+      aDotFound = true;
+    }
+    if (b[i] == '\0') {
+      bEnded = true;
+    } else if (a[i] == '.') {
+      bDotFound = true;
+    }
+
+    if ((aEnded == true && bEnded == true) &&
+        (aDotFound == false && bDotFound == false)) {
+      // no dot found
+      whileBreak = true;
+    }
+
+    if (aDotFound == true) {
+      if (bDotFound == true) {
+        // both dots found
+        finalDotPos = i;
+      } else {
+        // one dot found
+      }
+    } else if (bDotFound == true) {
+      if (aDotFound == true) {
+        // both dots found
+        finalDotPos = i;
+      } else {
+        // one dot found
       }
     }
     i++;
