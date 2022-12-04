@@ -4,7 +4,10 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-void deDot();
+void reAddZero(char* input, int dotPos);
+void matrixToString(char** input, char* output);
+void deDot(char* a, char* b, int* dotPos);
+int addZerosAndReturnDotPos(char* a, char* b);
 size_t s21_strlen(const char* str);
 void minusTen(char* input);
 void reverseString(char* inputArr);

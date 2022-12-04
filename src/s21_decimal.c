@@ -12,27 +12,66 @@ int main() {
   // char a[AB_SIZE] = "8326731548612467647832";
   // char b[AB_SIZE] = "8326731548612467647833";
 
-  deDot();
-
   // char a[AB_SIZE] = "875.84758623475897345878784953789";
   // char b[AB_SIZE] = "46237647823.64762374";
-  // -----------------------WHAT IS NEEDED:------------------------
-  // --------------------------------------------------------------
-  // char a[AB_SIZE] = "        875.84758623475897345878784953789";
-  // char b[AB_SIZE] = "46237647823.64762374000000000000000000000";
+  char a[AB_SIZE] = "42354366634.00014758623475897345878784953789";
+  char b[AB_SIZE] = "0.00004623764782364762374";
+  int dotPos = 0;
+  // -------------------------------------------------------------------
+  // DONT FORGET THAT FIRST STEP REQUIRES ADDITION/SUBTRACTION SPECIFIER
+  // -------------------------------------------------------------------
+  // char result[RES_SIZE][RAZR_SIZE] = {0};
+
+  // RESULT ALLOC:
+  // -------------
+  char** result = calloc(RES_SIZE, sizeof(char*));
+  for (int i = 0; i < RES_SIZE; i++) {
+    result[i] = calloc(RAZR_SIZE, sizeof(char));
+  }
+
+  printf("[%s]\n", a);
+  printf("[%s]\n\n", b);
+  deDot(a, b, &dotPos);
+  printf("[%s]\n", a);
+  printf("[%s]\n\n", b);
+
+  // reverse(a);
+  // reverse(b);
+  // decimFirstStep(a, b, result, true); // dont forget sub/add specifier
+  // decimSecondStepAdd(result);
+  // int resultSize = sizeDetector(result);
+  // reverseCharMatrix(result, resultSize);
+  // char outputString[1024] = {0};
+  // matrixToString(result, outputString);
+  // reAddZero(outputString, dotPos);
+  // printf("%s", outputString);
+
+  reverse(a);
+  reverse(b);
+  decimFirstStep(a, b, result, false);  // dont forget sub/add specifier
+  decimSecondStepSub(result);
+  int resultSize = sizeDetector(result);
+  reverseCharMatrix(result, resultSize);
+  char outputString[1024] = {0};
+  printer(result);
+  matrixToString(result, outputString);
+  reAddZero(outputString, dotPos);
+  printf("%s", outputString);
+
+  // strcat(ALeftPart, ARightPart);
+  // strcat(BLeftPart, BRightPart);
+  // printf("[%s]\n", ALeftPart);
+  // printf("[%s]\n\n", BLeftPart);
+  // reAddZero(ALeftPart, dotPos);
+  // reAddZero(BLeftPart, dotPos);
+  // printf("[%s]\n", ALeftPart);
+  // printf("[%s]\n\n", BLeftPart);
 
   // char a[AB_SIZE] = "9";
   // char b[AB_SIZE] = "9";
   // reverse(a);
   // reverse(b);
   // char result[RES_SIZE][RAZR_SIZE] = {0};
-
-  // RESULT ALLOC:
-  // -------------
-  // char** result = calloc(RES_SIZE, sizeof(char*));
-  // for (int i = 0; i < RES_SIZE; i++) {
-  //   result[i] = calloc(RAZR_SIZE, sizeof(char));
-  // }
 
   // decimFirstStep(a, b, result, true);
   // decimSecondStepAdd(result);
@@ -59,12 +98,20 @@ int main() {
 
   // FREEING:
   // --------
-  // for (int i = 0; i < 1024; i++) {
-  //   if (result[i]) free(result[i]);
-  // }
-  // if (result) free(result);
+  for (int i = 0; i < 1024; i++) {
+    if (result[i]) free(result[i]);
+  }
+  if (result) free(result);
 
   return 0;
+}
+
+void matrixToString(char** input, char* output) {
+  int i = 0;
+  while (s21_strlen(input[i]) > 0) {
+    strcat(output, input[i]);
+    i++;
+  }
 }
 
 void decimFirstStep(char* a, char* b, char** result, bool isAddition) {
@@ -125,6 +172,31 @@ void decimSecondStepAdd(char** result) {
   // if (tempForItoa2) free(tempForItoa2);
 }
 
+void decimSecondStepSub(char** result) {
+  int i = 0;
+  char* tempForItoa = calloc(1024, sizeof(char));
+
+  while (strlen(result[i]) > 0) {
+    // bool dontIncrement = false;
+    if (atoi(result[i]) < 0) {
+      if (strlen(result[i + 1]) > 0) {
+        itoa(atoi(result[i + 1]) - 1, tempForItoa);
+        strcpy(result[i + 1], tempForItoa);
+        itoa(10 + atoi(result[i]), tempForItoa);
+        strcpy(result[i], tempForItoa);
+        // dontIncrement = true;
+      }
+    }
+    // if (dontIncrement != true) {
+    //   i++;
+    // } else {
+    //   i = i - 2;
+    // }
+    i++;
+  }
+  if (tempForItoa) free(tempForItoa);
+}
+
 void minusTen(char* input) {
   input[0] = input[1];
   input[1] = '\0';
@@ -145,7 +217,7 @@ void place(int current, char** result, char* tempForItoa, int j) {
     strcpy(result[j], tempForItoa);
   }
 
-  printf("[%s]\n", result[j]);
+  // printf("[%s]\n", result[j]);
 }
 
 void itoa(long long num, char* src) {
@@ -240,31 +312,15 @@ size_t s21_strlen(const char* str) {
   return (size_t)len;
 }
 
-void decimSecondStepSub(char** result) {
-  int i = 0;
-  char* tempForItoa = calloc(1024, sizeof(char));
-  while (strlen(result[i]) > 0) {
-    if (atoi(result[i]) < 0) {
-      if (result[i + 1][0] != '\0') {
-        itoa(atoi(result[i + 1]) - 1, tempForItoa);
-        strcpy(result[i + 1], tempForItoa);
-        itoa(10 + atoi(result[i]), tempForItoa);
-        strcpy(result[i], tempForItoa);
-      }
-    }
-    i++;
-  }
-  if (tempForItoa) free(tempForItoa);
-}
-
-void deDot() {
-  char a[AB_SIZE] = "875.84758623475897345878784953789";
+void deDot(char* a, char* b, int* dotPos) {
   char aCpy[AB_SIZE] = {0};
   strcpy(aCpy, a);
 
-  char b[AB_SIZE] = "46237647823.64762374";
   char bCpy[AB_SIZE] = {0};
   strcpy(bCpy, b);
+
+  // printf("[%s]\n", a);
+  // printf("[%s]\n\n", b);
 
   // int finalDotPos = 0;
   // -----------------------WHAT IS NEEDED:------------------------
@@ -277,12 +333,14 @@ void deDot() {
   bool BDotFound = false;
   bool ADotParsed = false;
   bool BDotParsed = false;
+  char ALeftPart[1024] = {0};
+  char BLeftPart[1024] = {0};
+  char ARightPart[1024] = {0};
+  char BRightPart[1024] = {0};
   int i = 0;
   int j = 0;
   bool whileBreak = false;
   while (whileBreak == false) {
-    printf("[%c]", a[i]);
-    printf("[%c]", b[i]);
     if (AEnded == false && ADotFound == false) {
       if (a[i] == '\0') {
         AEnded = true;
@@ -299,34 +357,15 @@ void deDot() {
       }
     }
 
-    char leftPart[1024] = {0};
-    char rightPart[1024] = {0};
     if (ADotFound == true || ADotParsed == false) {
-      // if (BDotFound == true) {
-      //   // both dots found
-      //   // finalDotPos = i;
-      // } else {
-      //   // one dot found
-      strcpy(leftPart, strtok(aCpy, "."));
-      strcpy(rightPart, strtok(NULL, "."));
-      printf("\n[%s]", leftPart);
-      printf("\n[%s]", rightPart);
+      strcpy(ALeftPart, strtok(aCpy, "."));
+      strcpy(ARightPart, strtok(NULL, "."));
       ADotParsed = true;
-      // }
     }
     if (BDotFound == true || BDotParsed == false) {
-      // if (ADotFound == true) {
-      //   // both dots found
-      //   // finalDotPos = i;
-      //   // whileBreak = true;
-      // } else {
-      //   // one dot found
-      strcpy(leftPart, strtok(bCpy, "."));
-      strcpy(rightPart, strtok(NULL, "."));
-      printf("\n[%s]", leftPart);
-      printf("\n[%s]", rightPart);
+      strcpy(BLeftPart, strtok(bCpy, "."));
+      strcpy(BRightPart, strtok(NULL, "."));
       BDotParsed = true;
-      // }
     }
 
     if ((AEnded == true && BEnded == true) &&
@@ -342,7 +381,41 @@ void deDot() {
     if (AEnded == false && ADotFound == false) i++;
     if (BEnded == false && BDotFound == false) j++;
   }
+
+  *dotPos = addZerosAndReturnDotPos(ARightPart, BRightPart);
+
+  strcat(ALeftPart, ARightPart);
+  strcat(BLeftPart, BRightPart);
+
+  strcpy(a, ALeftPart);
+  strcpy(b, BLeftPart);
 }
+
+int addZerosAndReturnDotPos(char* a, char* b) {
+  int dotPos = -1;
+  int i = 0;
+  size_t biggerStrlen = strlen(a) > strlen(b) ? strlen(a) : strlen(b);
+  while (strlen(a) < biggerStrlen || strlen(b) < biggerStrlen) {
+    if (strlen(a) < strlen(b)) {
+      a[strlen(a) + i] = '0';
+    } else {
+      b[strlen(b) + i] = '0';
+    }
+  }
+  dotPos = strlen(a);
+  return dotPos;
+}
+
+void reAddZero(char* input, int dotPos) {
+  char tempStr[1024] = {0};
+  strncat(tempStr, input, strlen(input) - dotPos);
+  strcat(tempStr, ".");
+  strcat(tempStr, (char*)input + strlen(input) - dotPos);
+  strcpy(input, tempStr);
+}
+
+// printf("[\n%c]", a[i]);
+// printf("[\n%c]", b[j]);
 
 // HOMYACHU:
 // ------------
