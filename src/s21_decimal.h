@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+void deDot();
 size_t s21_strlen(const char* str);
 void minusTen(char* input);
 void reverseString(char* inputArr);
