@@ -409,79 +409,79 @@ void reAddZero(char* input, int dotPos) {
   strcpy(input, tempStr);
 }
 
-// void decimMulti(char* a, char* b, char** result) {
-//   // UGLY NECESSARY CALLOCS:
-//   // -----------------------
-//   char** firstStr = calloc(RES_SIZE, sizeof(char*));
-//   for (int i = 0; i < RES_SIZE; i++) {
-//     result[i] = calloc(RAZRYADS_SIZE, sizeof(char));
-//   }
-//   char** secStr = calloc(RES_SIZE, sizeof(char*));
-//   for (int i = 0; i < RES_SIZE; i++) {
-//     result[i] = calloc(RAZRYADS_SIZE, sizeof(char));
-//   }
-//   // -----------------------
-//   bool AEnded = false;
-//   bool BEnded = false;
-//   int ai = 0;
-//   int bi = 0;
-//   int curLineResult = -2147483640;
-//   int first = -2147483640;
-//   int second = -2147483640;
-//   char* tempForItoa = calloc(1024, sizeof(char));
-//   bool whileBreak = false;
-//   int aLen = strlen(a);
-//   int bLen = strlen(b);
+void decimMulti(char* a, char* b, char** result) {
+  // UGLY NECESSARY CALLOCS:
+  // -----------------------
+  char** firstStr = calloc(RES_SIZE, sizeof(char*));
+  for (int i = 0; i < RES_SIZE; i++) {
+    result[i] = calloc(RAZRYADS_SIZE, sizeof(char));
+  }
+  char** secStr = calloc(RES_SIZE, sizeof(char*));
+  for (int i = 0; i < RES_SIZE; i++) {
+    result[i] = calloc(RAZRYADS_SIZE, sizeof(char));
+  }
+  // -----------------------
+  bool AEnded = false;
+  bool BEnded = false;
+  int ai = 0;
+  int bi = 0;
+  int curLineResult = -2147483640;
+  int first = -2147483640;
+  int second = -2147483640;
+  char* tempForItoa = calloc(1024, sizeof(char));
+  bool whileBreak = false;
+  int aLen = strlen(a);
+  int bLen = strlen(b);
 
-//   for (int ai = 0; ai < aLen; ai++) {
-//     for (int bi = 0; bi < bLen; bi++) {
-//       int current = (a[ai] - '0') * (b[bi] - '0');
-//       place(current, result, tempForItoa, j);
-//     }
-//     ai++;
-//   }
+  for (int ai = 0; ai < aLen; ai++) {
+    for (int bi = 0; bi < bLen; bi++) {
+      int current = (a[ai] - '0') * (b[bi] - '0');
+      place(current, result, tempForItoa, j);
+    }
+    ai++;
+  }
 
-//   while (whileBreak == false) {
-//     if (a[i] == '\0') AEnded = true;
-//     if (b[i] == '\0') BEnded = true;
-//     if (AEnded == true && BEnded == true) {
-//       whileBreak = true;
-//     }
-//     int current = 0;
-//     if (AEnded != true && BEnded != true) {
-//       current = (a[i] - '0') * (b[i] - '0');
-//       place(current, result, tempForItoa, j);
-//       printf("[%s]\n", get(result, j));
-//     } else if (AEnded) {
-//       current = (b[i] - '0');
-//       place(current, result, tempForItoa, j);
-//     } else if (BEnded) {
-//       current = (a[i] - '0');
-//       place(current, result, tempForItoa, j);
-//     }
-//     j++;
-//     i++;
-//   }
-//   if (tempForItoa) free(tempForItoa);
+  while (whileBreak == false) {
+    if (a[i] == '\0') AEnded = true;
+    if (b[i] == '\0') BEnded = true;
+    if (AEnded == true && BEnded == true) {
+      whileBreak = true;
+    }
+    int current = 0;
+    if (AEnded != true && BEnded != true) {
+      current = (a[i] - '0') * (b[i] - '0');
+      place(current, result, tempForItoa, j);
+      printf("[%s]\n", get(result, j));
+    } else if (AEnded) {
+      current = (b[i] - '0');
+      place(current, result, tempForItoa, j);
+    } else if (BEnded) {
+      current = (a[i] - '0');
+      place(current, result, tempForItoa, j);
+    }
+    j++;
+    i++;
+  }
+  if (tempForItoa) free(tempForItoa);
 
-//   int i = 0;
-//   char* tempForItoa1 = calloc(1024, sizeof(char));
-//   while (strlen(get(result, i)) > 0) {
-//     if (atoi(result[i]) > 9) {
-//       if (result[i + 1][0] != '\0') {
-//         itoa(atoi(result[i + 1]) + 1, tempForItoa1);
-//         strcpy(result[i + 1], tempForItoa1);
-//       } else {
-//         result[i + 1][0] = '1';
-//       }
-//       minusTen(result[i]);
-//     }
-//     i++;
-//   }
+  int i = 0;
+  char* tempForItoa1 = calloc(1024, sizeof(char));
+  while (strlen(get(result, i)) > 0) {
+    if (atoi(result[i]) > 9) {
+      if (result[i + 1][0] != '\0') {
+        itoa(atoi(result[i + 1]) + 1, tempForItoa1);
+        strcpy(result[i + 1], tempForItoa1);
+      } else {
+        result[i + 1][0] = '1';
+      }
+      minusTen(result[i]);
+    }
+    i++;
+  }
 
-//   if (firstStr) free(firstStr);
-//   if (secStr) free(secStr);
-// }
+  if (firstStr) free(firstStr);
+  if (secStr) free(secStr);
+}
 
 // HOMYACHU:
 // ------------
