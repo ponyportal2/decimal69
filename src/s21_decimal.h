@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+void decimFirstStepMulti(char* a, char* b, char** result);
 void reAddZero(char* input, int dotPos);
 void matrixToString(char** input, char* output);
 void deDot(char* a, char* b, int* dotPos);

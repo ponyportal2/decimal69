@@ -17,6 +17,7 @@ int main() {
   char a[AB_SIZE] = "42354366634.00014758623475897345878784953789";
   char b[AB_SIZE] = "0.00004623764782364762374";
   int dotPos = 0;
+
   // -------------------------------------------------------------------
   // DONT FORGET THAT FIRST STEP REQUIRES ADDITION/SUBTRACTION SPECIFIER
   // -------------------------------------------------------------------
@@ -35,6 +36,8 @@ int main() {
   printf("[%s]\n", a);
   printf("[%s]\n\n", b);
 
+  // ADDITION:
+  // ---------
   // reverse(a);
   // reverse(b);
   // decimFirstStep(a, b, result, true); // dont forget sub/add specifier
@@ -46,9 +49,26 @@ int main() {
   // reAddZero(outputString, dotPos);
   // printf("%s", outputString);
 
+  // SUBTRACTION:
+  // ------------
+  // reverse(a);
+  // reverse(b);
+  // decimFirstStep(a, b, result, false);  // dont forget sub/add specifier
+  // decimSecondStepSub(result);
+  // int resultSize = sizeDetector(result);
+  // reverseCharMatrix(result, resultSize);
+  // char outputString[1024] = {0};
+  // printer(result);
+  // matrixToString(result, outputString);
+  // reAddZero(outputString, dotPos);
+  // printf("%s", outputString);
+
+  // MULTIPLICATION:
+  // ---------------
+
   reverse(a);
   reverse(b);
-  decimFirstStep(a, b, result, false);  // dont forget sub/add specifier
+  decimFirstStepMulti(a, b, result);  // dont forget sub/add specifier
   decimSecondStepSub(result);
   int resultSize = sizeDetector(result);
   reverseCharMatrix(result, resultSize);
@@ -413,6 +433,77 @@ void reAddZero(char* input, int dotPos) {
   strcat(tempStr, (char*)input + strlen(input) - dotPos);
   strcpy(input, tempStr);
 }
+
+void decimMulti(char* a, char* b, char** result) {
+  bool AEnded = false;
+  bool BEnded = false;
+  int i = 0;
+  int j = 0;
+  int firstForMulti = -2147483640;
+  int secondForMulti = -2147483640;
+  char* tempForItoa = calloc(1024, sizeof(char));
+  // char tempForItoa[1024] = {0};
+  bool whileBreak = false;
+  while (whileBreak == false) {
+    // printf("a:[%c], b:[%c]\n", a[i], b[i]);
+    if (a[i] == '\0') AEnded = true;
+    if (b[i] == '\0') BEnded = true;
+    if (AEnded == true && BEnded == true) {
+      whileBreak = true;
+    }
+    int current = 0;
+    if (AEnded != true && BEnded != true) {
+      current = (a[i] - '0') * (b[i] - '0');
+      place(current, result, tempForItoa, j);
+      printf("[%s]\n", get(result, j));
+    } else if (AEnded) {
+      current = (b[i] - '0');
+      place(current, result, tempForItoa, j);
+    } else if (BEnded) {
+      current = (a[i] - '0');
+      place(current, result, tempForItoa, j);
+    }
+    j++;
+    i++;
+  }
+  if (tempForItoa) free(tempForItoa);
+
+  int i = 0;
+  char* tempForItoa1 = calloc(1024, sizeof(char));
+  // char* tempForItoa2 = calloc(1024, sizeof(char));
+  while (strlen(get(result, i)) > 0) {
+    if (atoi(result[i]) > 9) {
+      // place(atoi(result[i]), result, tempForItoa1, i);
+      if (result[i + 1][0] != '\0') {
+        itoa(atoi(result[i + 1]) + 1, tempForItoa1);
+        strcpy(result[i + 1], tempForItoa1);
+      } else {
+        result[i + 1][0] = '1';
+        // result[i + 1][0] = '1';
+        // printf("[%s]", result[i + 1]);
+      }
+      minusTen(result[i]);
+    }
+
+    i++;
+  }
+  // if (tempForItoa1) free(tempForItoa1);
+  // if (tempForItoa2) free(tempForItoa2);
+}
+
+// int MultiTable(int a, int b) {
+//   int returnValue = -2147483640;
+//   if (a == 0 || b == 0) {
+//     returnValue = 0;
+//   } else if (a == 1) {
+//     returnValue = b;
+//   } else if (b == 1) {
+//     returnValue = a;
+//   } else {
+//     int two[10] = {0,1,2,4,6,8,10,12,14,16,18,20};
+//     int three[10] = {0,1,2,4,6,8,10,12,14,16,18,20};
+//   }
+// };
 
 // printf("[\n%c]", a[i]);
 // printf("[\n%c]", b[j]);
