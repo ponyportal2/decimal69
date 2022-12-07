@@ -7,6 +7,7 @@
 
 #define MAX_INPUT_SIZE 256
 #define MAX_ATOMS 512
+#define MAX_MULT_SUBPRODUCTS 256
 
 int main() {
   // char a[AB_SIZE] = "8326731548612467647832";
@@ -27,9 +28,9 @@ int main() {
   // RESULT ALLOC:
   // -------------
   // char result[RES_SIZE][RAZR_SIZE] = {0}; // static initialization variant
-  char** result = calloc(MAX_ATOMS, sizeof(char*));
-  for (int i = 0; i < MAX_ATOMS; i++) {
-    result[i] = calloc(ATOM_SIZE, sizeof(char));
+  char** result = calloc(MAX_MULT_SUBPRODUCTS, sizeof(char*));
+  for (int i = 0; i < MAX_MULT_SUBPRODUCTS; i++) {
+    result[i] = calloc(MULT_SUBPRODUCT_SIZE, sizeof(char));
   }
 
   printf("[%s]\n", a);
@@ -412,22 +413,16 @@ void reAddZero(char* input, int dotPos) {
 void decimMulti(char* a, char* b, char** result) {
   // UGLY NECESSARY CALLOCS:
   // -----------------------
-  char** firstStr = calloc(RES_SIZE, sizeof(char*));
-  for (int i = 0; i < RES_SIZE; i++) {
-    result[i] = calloc(RAZRYADS_SIZE, sizeof(char));
+  char** subProducts = calloc(MAX_ATOMS, sizeof(char*));
+  for (int i = 0; i < MAX_ATOMS; i++) {
+    result[i] = calloc(ATOM_SIZE, sizeof(char));
   }
-  char** secStr = calloc(RES_SIZE, sizeof(char*));
-  for (int i = 0; i < RES_SIZE; i++) {
-    result[i] = calloc(RAZRYADS_SIZE, sizeof(char));
-  }
-  // -----------------------
+
   bool AEnded = false;
   bool BEnded = false;
   int ai = 0;
   int bi = 0;
   int curLineResult = -2147483640;
-  int first = -2147483640;
-  int second = -2147483640;
   char* tempForItoa = calloc(1024, sizeof(char));
   bool whileBreak = false;
   int aLen = strlen(a);
@@ -480,11 +475,18 @@ void decimMulti(char* a, char* b, char** result) {
   }
 
   if (firstStr) free(firstStr);
-  if (secStr) free(secStr);
 }
 
 // HOMYACHU:
 // ------------
+
+// char** secStr = calloc(RES_SIZE, sizeof(char*));
+// for (int i = 0; i < RES_SIZE; i++) {
+//   result[i] = calloc(RAZRYADS_SIZE, sizeof(char));
+// }
+// -----------------------
+
+// if (secStr) free(secStr);
 
 // printf("[%s]", inputArr[n - i - 1]);
 

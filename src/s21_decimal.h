@@ -1,4 +1,5 @@
 #define ATOM_SIZE 8
+#define MULT_SUBPRODUCT_SIZE 256
 #define MAXLINE_FOR_REVERSE 2048
 // #define sint char
 #include <stdbool.h>
