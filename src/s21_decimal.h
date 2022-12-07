@@ -1,4 +1,4 @@
-#define RAZR_SIZE 512
+#define ATOM_SIZE 8
 #define MAXLINE_FOR_REVERSE 2048
 // #define sint char
 #include <stdbool.h>

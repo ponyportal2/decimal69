@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define AB_SIZE 256
-#define RES_SIZE 1024
+#define MAX_INPUT_SIZE 256
+#define MAX_ATOMS 512
 
 int main() {
   // char a[AB_SIZE] = "8326731548612467647832";
@@ -14,20 +14,22 @@ int main() {
 
   // char a[AB_SIZE] = "875.84758623475897345878784953789";
   // char b[AB_SIZE] = "46237647823.64762374";
-  char a[AB_SIZE] = "42354366634.00014758623475897345878784953789";
-  char b[AB_SIZE] = "0.00004623764782364762374";
+
+  char a[MAX_INPUT_SIZE] = "42354366634.00014758623475897345878784953789";
+  char b[MAX_INPUT_SIZE] = "0.00004623764782364762374";
+
   int dotPos = 0;
 
   // -------------------------------------------------------------------
   // DONT FORGET THAT FIRST STEP REQUIRES ADDITION/SUBTRACTION SPECIFIER
   // -------------------------------------------------------------------
-  // char result[RES_SIZE][RAZR_SIZE] = {0};
 
   // RESULT ALLOC:
   // -------------
-  char** result = calloc(RES_SIZE, sizeof(char*));
-  for (int i = 0; i < RES_SIZE; i++) {
-    result[i] = calloc(RAZR_SIZE, sizeof(char));
+  // char result[RES_SIZE][RAZR_SIZE] = {0}; // static initialization variant
+  char** result = calloc(MAX_ATOMS, sizeof(char*));
+  for (int i = 0; i < MAX_ATOMS; i++) {
+    result[i] = calloc(ATOM_SIZE, sizeof(char));
   }
 
   printf("[%s]\n", a);
@@ -51,24 +53,9 @@ int main() {
 
   // SUBTRACTION:
   // ------------
-  // reverse(a);
-  // reverse(b);
-  // decimFirstStep(a, b, result, false);  // dont forget sub/add specifier
-  // decimSecondStepSub(result);
-  // int resultSize = sizeDetector(result);
-  // reverseCharMatrix(result, resultSize);
-  // char outputString[1024] = {0};
-  // printer(result);
-  // matrixToString(result, outputString);
-  // reAddZero(outputString, dotPos);
-  // printf("%s", outputString);
-
-  // MULTIPLICATION:
-  // ---------------
-
   reverse(a);
   reverse(b);
-  decimFirstStepMulti(a, b, result);  // dont forget sub/add specifier
+  decimFirstStep(a, b, result, false);  // dont forget sub/add specifier
   decimSecondStepSub(result);
   int resultSize = sizeDetector(result);
   reverseCharMatrix(result, resultSize);
@@ -77,6 +64,20 @@ int main() {
   matrixToString(result, outputString);
   reAddZero(outputString, dotPos);
   printf("%s", outputString);
+
+  // MULTIPLICATION:
+  // ---------------
+  // reverse(a);
+  // reverse(b);
+  // decimFirstStepMulti(a, b, result);
+  // decimSecondStepSub(result);
+  // int resultSize = sizeDetector(result);
+  // reverseCharMatrix(result, resultSize);
+  // char outputString[1024] = {0};
+  // printer(result);
+  // matrixToString(result, outputString);
+  // reAddZero(outputString, dotPos);
+  // printf("%s", outputString);
 
   // strcat(ALeftPart, ARightPart);
   // strcat(BLeftPart, BRightPart);
@@ -118,7 +119,7 @@ int main() {
 
   // FREEING:
   // --------
-  for (int i = 0; i < 1024; i++) {
+  for (int i = 0; i < ATOM_SIZE; i++) {
     if (result[i]) free(result[i]);
   }
   if (result) free(result);
@@ -140,7 +141,6 @@ void decimFirstStep(char* a, char* b, char** result, bool isAddition) {
   int i = 0;
   int j = 0;
   char* tempForItoa = calloc(1024, sizeof(char));
-  // char tempForItoa[1024] = {0};
   bool whileBreak = false;
   while (whileBreak == false) {
     // printf("a:[%c], b:[%c]\n", a[i], b[i]);
@@ -154,7 +154,6 @@ void decimFirstStep(char* a, char* b, char** result, bool isAddition) {
       if (isAddition) current = (a[i] - '0') + (b[i] - '0');
       if (isAddition == false) current = (a[i] - '0') - (b[i] - '0');
       place(current, result, tempForItoa, j);
-      // printf("[%s]\n", get(result, j));
     } else if (AEnded) {
       current = (b[i] - '0');
       place(current, result, tempForItoa, j);
@@ -171,47 +170,32 @@ void decimFirstStep(char* a, char* b, char** result, bool isAddition) {
 void decimSecondStepAdd(char** result) {
   int i = 0;
   char* tempForItoa1 = calloc(1024, sizeof(char));
-  // char* tempForItoa2 = calloc(1024, sizeof(char));
   while (strlen(get(result, i)) > 0) {
     if (atoi(result[i]) > 9) {
-      // place(atoi(result[i]), result, tempForItoa1, i);
       if (result[i + 1][0] != '\0') {
         itoa(atoi(result[i + 1]) + 1, tempForItoa1);
         strcpy(result[i + 1], tempForItoa1);
       } else {
         result[i + 1][0] = '1';
-        // result[i + 1][0] = '1';
-        // printf("[%s]", result[i + 1]);
       }
       minusTen(result[i]);
     }
-
     i++;
   }
-  // if (tempForItoa1) free(tempForItoa1);
-  // if (tempForItoa2) free(tempForItoa2);
 }
 
 void decimSecondStepSub(char** result) {
   int i = 0;
   char* tempForItoa = calloc(1024, sizeof(char));
-
   while (strlen(result[i]) > 0) {
-    // bool dontIncrement = false;
     if (atoi(result[i]) < 0) {
       if (strlen(result[i + 1]) > 0) {
         itoa(atoi(result[i + 1]) - 1, tempForItoa);
         strcpy(result[i + 1], tempForItoa);
         itoa(10 + atoi(result[i]), tempForItoa);
         strcpy(result[i], tempForItoa);
-        // dontIncrement = true;
       }
     }
-    // if (dontIncrement != true) {
-    //   i++;
-    // } else {
-    //   i = i - 2;
-    // }
     i++;
   }
   if (tempForItoa) free(tempForItoa);
@@ -236,7 +220,6 @@ void place(int current, char** result, char* tempForItoa, int j) {
   } else {
     strcpy(result[j], tempForItoa);
   }
-
   // printf("[%s]\n", result[j]);
 }
 
@@ -268,7 +251,7 @@ void reverse(char* string) {
 }
 
 char* get(char** result, int i) {
-  if (i < RAZR_SIZE) {
+  if (i < ATOM_SIZE) {
     return (char*)result[i];
   } else {
     perror("OVERFLOW");
@@ -282,7 +265,6 @@ void reverseCharMatrix(char** inputArr, int n) {
     char tempStr[1024] = {0};
     strcpy(tempStr, inputArr[i]);
     strcpy(inputArr[i], inputArr[n - i - 1]);
-    // printf("[%s]", inputArr[n - i - 1]);
     strcpy(inputArr[n - i - 1], tempStr);
     // printf("[%s]", tempStr);
     i++;
@@ -302,8 +284,6 @@ void reverseString(char* inputArr) {
 int sizeDetector(char** result) {
   int i = 0;
   while (s21_strlen(result[i]) > 0) {
-    // printf("i:[%i]", i);
-    // printf("s:[%s]\n", result[i]);
     i++;
   }
   return i;
@@ -333,16 +313,11 @@ size_t s21_strlen(const char* str) {
 }
 
 void deDot(char* a, char* b, int* dotPos) {
-  char aCpy[AB_SIZE] = {0};
+  char aCpy[MAX_INPUT_SIZE] = {0};
   strcpy(aCpy, a);
 
-  char bCpy[AB_SIZE] = {0};
+  char bCpy[MAX_INPUT_SIZE] = {0};
   strcpy(bCpy, b);
-
-  // printf("[%s]\n", a);
-  // printf("[%s]\n\n", b);
-
-  // int finalDotPos = 0;
   // -----------------------WHAT IS NEEDED:------------------------
   // char a[AB_SIZE] = "        875.84758623475897345878784953789";
   // char b[AB_SIZE] = "46237647823.64762374000000000000000000000";
@@ -434,62 +409,106 @@ void reAddZero(char* input, int dotPos) {
   strcpy(input, tempStr);
 }
 
-void decimMulti(char* a, char* b, char** result) {
-  bool AEnded = false;
-  bool BEnded = false;
-  int i = 0;
-  int j = 0;
-  int firstForMulti = -2147483640;
-  int secondForMulti = -2147483640;
-  char* tempForItoa = calloc(1024, sizeof(char));
-  // char tempForItoa[1024] = {0};
-  bool whileBreak = false;
-  while (whileBreak == false) {
-    // printf("a:[%c], b:[%c]\n", a[i], b[i]);
-    if (a[i] == '\0') AEnded = true;
-    if (b[i] == '\0') BEnded = true;
-    if (AEnded == true && BEnded == true) {
-      whileBreak = true;
-    }
-    int current = 0;
-    if (AEnded != true && BEnded != true) {
-      current = (a[i] - '0') * (b[i] - '0');
-      place(current, result, tempForItoa, j);
-      printf("[%s]\n", get(result, j));
-    } else if (AEnded) {
-      current = (b[i] - '0');
-      place(current, result, tempForItoa, j);
-    } else if (BEnded) {
-      current = (a[i] - '0');
-      place(current, result, tempForItoa, j);
-    }
-    j++;
-    i++;
-  }
-  if (tempForItoa) free(tempForItoa);
+// void decimMulti(char* a, char* b, char** result) {
+//   // UGLY NECESSARY CALLOCS:
+//   // -----------------------
+//   char** firstStr = calloc(RES_SIZE, sizeof(char*));
+//   for (int i = 0; i < RES_SIZE; i++) {
+//     result[i] = calloc(RAZRYADS_SIZE, sizeof(char));
+//   }
+//   char** secStr = calloc(RES_SIZE, sizeof(char*));
+//   for (int i = 0; i < RES_SIZE; i++) {
+//     result[i] = calloc(RAZRYADS_SIZE, sizeof(char));
+//   }
+//   // -----------------------
+//   bool AEnded = false;
+//   bool BEnded = false;
+//   int ai = 0;
+//   int bi = 0;
+//   int curLineResult = -2147483640;
+//   int first = -2147483640;
+//   int second = -2147483640;
+//   char* tempForItoa = calloc(1024, sizeof(char));
+//   bool whileBreak = false;
+//   int aLen = strlen(a);
+//   int bLen = strlen(b);
 
-  int i = 0;
-  char* tempForItoa1 = calloc(1024, sizeof(char));
-  // char* tempForItoa2 = calloc(1024, sizeof(char));
-  while (strlen(get(result, i)) > 0) {
-    if (atoi(result[i]) > 9) {
-      // place(atoi(result[i]), result, tempForItoa1, i);
-      if (result[i + 1][0] != '\0') {
-        itoa(atoi(result[i + 1]) + 1, tempForItoa1);
-        strcpy(result[i + 1], tempForItoa1);
-      } else {
-        result[i + 1][0] = '1';
-        // result[i + 1][0] = '1';
-        // printf("[%s]", result[i + 1]);
-      }
-      minusTen(result[i]);
-    }
+//   for (int ai = 0; ai < aLen; ai++) {
+//     for (int bi = 0; bi < bLen; bi++) {
+//       int current = (a[ai] - '0') * (b[bi] - '0');
+//       place(current, result, tempForItoa, j);
+//     }
+//     ai++;
+//   }
 
-    i++;
-  }
-  // if (tempForItoa1) free(tempForItoa1);
-  // if (tempForItoa2) free(tempForItoa2);
-}
+//   while (whileBreak == false) {
+//     if (a[i] == '\0') AEnded = true;
+//     if (b[i] == '\0') BEnded = true;
+//     if (AEnded == true && BEnded == true) {
+//       whileBreak = true;
+//     }
+//     int current = 0;
+//     if (AEnded != true && BEnded != true) {
+//       current = (a[i] - '0') * (b[i] - '0');
+//       place(current, result, tempForItoa, j);
+//       printf("[%s]\n", get(result, j));
+//     } else if (AEnded) {
+//       current = (b[i] - '0');
+//       place(current, result, tempForItoa, j);
+//     } else if (BEnded) {
+//       current = (a[i] - '0');
+//       place(current, result, tempForItoa, j);
+//     }
+//     j++;
+//     i++;
+//   }
+//   if (tempForItoa) free(tempForItoa);
+
+//   int i = 0;
+//   char* tempForItoa1 = calloc(1024, sizeof(char));
+//   while (strlen(get(result, i)) > 0) {
+//     if (atoi(result[i]) > 9) {
+//       if (result[i + 1][0] != '\0') {
+//         itoa(atoi(result[i + 1]) + 1, tempForItoa1);
+//         strcpy(result[i + 1], tempForItoa1);
+//       } else {
+//         result[i + 1][0] = '1';
+//       }
+//       minusTen(result[i]);
+//     }
+//     i++;
+//   }
+
+//   if (firstStr) free(firstStr);
+//   if (secStr) free(secStr);
+// }
+
+// HOMYACHU:
+// ------------
+
+// printf("[%s]", inputArr[n - i - 1]);
+
+// char tempForItoa[1024] = {0};
+
+// printf("i:[%i]", i);
+// printf("s:[%s]\n", result[i]);
+
+// char* tempForItoa2 = calloc(1024, sizeof(char));
+
+// result[i + 1][0] = '1';
+// printf("[%s]", result[i + 1]);
+
+// if (tempForItoa1) free(tempForItoa1);
+// if (tempForItoa2) free(tempForItoa2);
+
+// place(atoi(result[i]), result, tempForItoa1, i);
+
+// printf("[%s]\n", a);
+// printf("[%s]\n\n", b);
+
+// int finalDotPos = 0;
+
+// printf("a:[%c], b:[%c]\n", a[i], b[i]);
 
 // int MultiTable(int a, int b) {
 //   int returnValue = -2147483640;
@@ -507,9 +526,6 @@ void decimMulti(char* a, char* b, char** result) {
 
 // printf("[\n%c]", a[i]);
 // printf("[\n%c]", b[j]);
-
-// HOMYACHU:
-// ------------
 
 // void decimSubFirstStep(char* a, char* b, char** result) {
 //   bool AEnded = false;
