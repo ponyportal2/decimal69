@@ -207,7 +207,7 @@ void minusTen(char* input) {
   input[1] = '\0';
 }
 
-void place(int current, char** result, char* tempForItoa, int j) {
+void place(int current, char** inputMatrix, char* tempForItoa, int j) {
   // printf("[%i]", current);
   if (current < 0) {
     itoa(current, tempForItoa);
@@ -217,11 +217,11 @@ void place(int current, char** result, char* tempForItoa, int j) {
     // printf("* %s\n", tempForItoa);
   }
   if (strcmp(tempForItoa, "-48") == 0) {
-    strcpy(result[j], "\0");
+    strcpy(inputMatrix[j], "\0");
   } else {
-    strcpy(result[j], tempForItoa);
+    strcpy(inputMatrix[j], tempForItoa);
   }
-  // printf("[%s]\n", result[j]);
+  // printf("[%s]\n", inputMatrix[j]);
 }
 
 void itoa(long long num, char* src) {
@@ -431,7 +431,7 @@ void decimMulti(char* a, char* b, char** result) {
   for (int ai = 0; ai < aLen; ai++) {
     for (int bi = 0; bi < bLen; bi++) {
       int current = (a[ai] - '0') * (b[bi] - '0');
-      place(current, result, tempForItoa, j);
+      place(current, subProducts, tempForItoa, j);
     }
     ai++;
   }
