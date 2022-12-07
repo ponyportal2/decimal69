@@ -1,9 +1,83 @@
 #include "s21_decimal.h"
 
+void addZeroAfterSign(char* var, int sign1, int *sign2) {
+    int dif = sign1 - *sign2;
+    int start_size = (int)strlen(var); int i = 0;
+    for (i = start_size; i < start_size + dif; i++) {
+        var[i] = '0';
+    }
+    var[i] = '\0';
+    *sign2 = sign1;
+}
+
+void addZeroBeforeNumber(char* var, int size1, int size2) {
+    char res[RES_SIZE] = "";
+    int dif = size1 - size2;
+    int i = 0;
+    res[size1] = '\0';
+    for (i = 0; i < dif; i++) {
+        res[i] = '0';
+    }
+    for (i = dif; i < size1; i++) {
+        res[i] = var[i - dif];
+    }
+    strncpy(var, res, size1);
+}
+
+int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
+
+}
+
+int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
+    int no_error = 1;
+    char num1[RES_SIZE] = "1011";
+    char num2[RES_SIZE] = "101011";
+    int sign1 = 2, sign2 = 3;
+    if (sign1 != sign2) {
+        (sign1 > sign2)? addZeroAfterSign(num2, sign1, &sign2) : addZeroAfterSign(num1, sign2, &sign1);
+    }
+    int size1 = (int) strlen(num1);
+    int size2 = (int) strlen(num2);
+    if (size1 != size2) {
+        (size1 > size2)? addZeroBeforeNumber(num2, size1, size2) : addZeroBeforeNumber(num1, size2, size1);
+    }
+    printf("\nnum1 = %s,\nnum2 = %s\n", num1, num2);
+    char res[RES_SIZE] = ""; int j = 0, tmp = 0, val = 0;
+    for (int i = (int)strlen(num1) - 1; i >= 0; i--) {
+            val = (num1[i] - '0') + (num2[i] - '0') + tmp;
+            if (val < 2) {
+                res[j++] = val + '0';
+                tmp = 0;
+            } else if (val == 2) {
+                res[j++] = '0';
+                tmp = 1;
+            } else {
+                res[j++] = '1';
+                tmp = 1;
+            }
+    }
+    if (tmp == 1) res[j++] = '1';
+    res[j++] = '\0';
+    char rev[RES_SIZE] = "";
+    reverse(res, rev);
+    printf("\nrev = %s\n", rev);
+    return no_error;
+}
+
+void reverse(char *value, char* rev) {
+    size_t l = strlen(value);
+    for(int i = 0; i < l; i++) {
+        rev[i] = value[l - 1 - i];
+    }
+    rev[l] = '\0';
+}
+
 s21_decimal parseDecimal(char *value)
 {
     int n = 0, i = 0, size = 32, first = 1, flag = 0;
     long int val = parseLongInt(value, &n, &flag);
+    //long long unsigned int v = 64294967296429496729611111111;
+   // printf("\nlong int = %lu\n", strtoul(value, NULL, 16));
     s21_decimal res;
     char revers[RES_SIZE] = "";
     longIntIoBinaryChar(val, revers);
@@ -49,8 +123,8 @@ s21_decimal parseDecimal(char *value)
     }
     rev[l] = '\0';
     res.bits[3] = (int) strtol(rev, NULL, 2);
-    printf("flag = %d\nn = %d\nspecial = %s\nbits[3] = %s\n",flag, n, special, itoa(res.bits[3], 2));
-    printf("full num = %s\n",num);
+    printf("flag = %d\nn = %d\nbits[3] = %s\n",flag, n, itoa(res.bits[3], 2));
+    //printf("full num = %s\n",num);
     return res;
 }
 
@@ -145,12 +219,36 @@ long int parseLongInt(char *value, int *n, int *flag)
 
 char *parseChar(s21_decimal value)
 {
-    char tmp[RES_SIZE] = "";
-    //for (size_t i = 0; i < sizeof(value.bits[0])/sizeof(value.bits[0][0]); i++) {
-      //  tmp[i] = value.bits[0][i] + '0';
-    //}
-   // itoa(value.bits[0], tmp, 2);
-    printf("str = %s\n", tmp);
-    // value.bits[0];
+    char num[RES_SIZE] = "";
+    char special[RES_SIZE] = "";
+    char N[RES_SIZE] = "";
+    for (int i = 2; i >= 0; i--) {
+        strcat(num, itoa(value.bits[i], 2));
+    }
+    strcat(special, itoa(value.bits[3], 2));
+    printf("full num = %s\n", num);
+    size_t size = strlen(special) - 17;
+    int flag = 0, n = 0, j = 0, first = 1, end = 0;
+    if (special[0] == '1' && strlen(special) == 32) flag = 1;
+    for (int i = (int)size; i >= 0; i--) { //can not use size_t here
+        if (special[i] == '0' && !first) {
+            end = 1;
+        }
+        if (!end) {
+            if (special[i] == '1' && first) first = 0;
+            N[j] = special[i]; j++;
+        }
+    }
+    N[j] = '\0';
+    long int res = 0;
+    for (size_t i = 0; i < strlen(N); i++) {
+        n += (N[i] - '0') * pow(2, i);
+    }
+    j = 0;
+    for (int i = (int)strlen(num) - 1; i >= 0; i--) {
+        res += (num[j] - '0') * powl(2, i); j++;
+    }
+    printf("strlen = %ld, special = %s\nlen = %ld\nN = %s\nflag = %d\nn = %d\nres = %ld\n", 
+    strlen(num), special, size, N, flag, n, res);
     return "";
 }
