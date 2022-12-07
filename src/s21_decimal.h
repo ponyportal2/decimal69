@@ -13,6 +13,11 @@ typedef struct
 {
     int bits[4];
 } s21_decimal;
+void set_bits(s21_decimal res, char* value);
+void get_res_char(char * res);
+s21_decimal get_result(char * res, int flag, int sign);
+s21_decimal parseFromBinToDecimal(char *value);
+void getFlagAndPoint(s21_decimal value, int* flag, int* point);
 void addZeroAfterSign(char* var, int sign1, int *sign2);
 void addZeroBeforeNumber(char* var, int size1, int size2);
 void reverse(char *value, char* rev);
