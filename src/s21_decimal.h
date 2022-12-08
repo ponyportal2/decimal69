@@ -13,7 +13,11 @@ typedef struct
 {
     int bits[4];
 } s21_decimal;
-void set_bits(s21_decimal res, char* value);
+s21_decimal set_result(char * res, int flag, int sign);
+void set_sign_and_flag(char* val, int* sign, int *flag);
+void print_s21_decimal(s21_decimal dec);
+void getBits3Char(char* special, int flag, int sign);
+s21_decimal set_bits(char* value);
 void get_res_char(char * res);
 s21_decimal get_result(char * res, int flag, int sign);
 s21_decimal parseFromBinToDecimal(char *value);

@@ -1,5 +1,65 @@
 #include "s21_decimal.h"
 
+s21_decimal set_result(char * res, int flag, int sign) {\
+    s21_decimal d = set_bits(res);
+    char special[RES_SIZE] = "";
+    getBits3Char(special, flag, sign);
+    d.bits[3] = (int) strtol(special, NULL, 2);
+    return d;
+}
+
+int s21_from_float_to_decimal(float src, s21_decimal *dst) {
+    int no_error = 1;
+    char str[RES_SIZE] = "";
+    sprintf(str, "%f", src);
+    int sign = 0, flag = 0;
+    set_sign_and_flag(str, &sign, &flag);
+    int val = (int) (src * pow(10, sign));
+    char res[RES_SIZE] = "";
+    longIntIoBinaryChar((long int)val, res);
+    printf("res = %s\nsrc = %f\nstr = %s\nsign! = %d\nflag = %d\n", res, src, str, sign, flag);
+    *dst = set_result(res, flag, sign);
+    return no_error;
+}
+
+int s21_from_int_to_decimal(int src, s21_decimal *dst) {
+    int no_error = 1;
+    char str[RES_SIZE] = "";
+    sprintf(str, "%d", src);
+    int sign = 0, flag = 0;
+    set_sign_and_flag(str, &sign, &flag);
+    char res[RES_SIZE] = "";
+    longIntIoBinaryChar((long int)src, res);
+    printf("res = %s\nsrc = %d\nstr = %s\nsign! = %d\nflag = %d\n", res, src, str, sign, flag);
+    *dst = set_result(res, flag, sign);
+    return no_error;
+}
+
+void set_sign_and_flag(char* val, int* sign, int *flag) {
+    int is_float = 0, empty = 1, start = 0;
+    switch (val[0]) {
+        case '+': *flag = 0; start = 1; break;
+        case '-': *flag = 1; start = 1; break;
+        default: *flag = 0; break;
+    }
+    for (size_t i = (size_t)start; i < strlen(val); i++) {
+        if (is_float) {
+            *sign += 1;
+        }
+        if (val[i] == '.' || val[i] == ',') {
+            is_float = 1;
+        }
+    }
+    for (int i = (int)strlen(val) - 1; i >= start; i--) {
+        if (val[i] != '0') {
+            empty = 0;
+        }
+        if (empty) {
+            if (*sign > 0) *sign -= 1;
+        }
+    }
+}
+
 void addZeroAfterSign(char* var, int sign1, int *sign2) {
     int dif = sign1 - *sign2;
     int start_size = (int)strlen(var); int i = 0;
@@ -25,7 +85,8 @@ void addZeroBeforeNumber(char* var, int size1, int size2) {
 }
 
 int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
-    
+    int no_error = 1;
+    return no_error;
 }
 
 int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
@@ -77,12 +138,50 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
 s21_decimal get_result(char * res, int flag, int sign) {
     char temp[RES_SIZE] = "";
     get_res_char(res);
-    printf("\nrev = %s\n", res);
-    s21_decimal d;
-    return d; 
+    s21_decimal d = set_bits(res);
+    char special[RES_SIZE] = "";
+    getBits3Char(special, flag, sign);
+    d.bits[3] = (int) strtol(special, NULL, 2);
+    return d;
 }
 
-void set_bits(s21_decimal res, char* value) {
+void print_s21_decimal(s21_decimal dec) {
+    for (int i = 3; i >= 0; i--) {
+        if (dec.bits[i]) printf("\nbits[%d] = %s\n", i, itoa(dec.bits[i], 2));
+    }
+}
+
+void getBits3Char(char* special, int flag, int sign) {
+    size_t t = 0; 
+    int first = 1;
+    for (t = 0; t < 32; t++) {
+        if (t < 16 || (t > 23 && t < 31)) special[t] = '0';
+        else if (t == 31) special[t] = '0' + flag;
+        else {
+            if (first) {
+                int x = sign;
+                if (sign != 0) {
+                while (x != 1) {
+                    special[t] = x % 2 + '0';
+                    x /= 2;
+                    t++;
+                }
+                }
+                special[t] = '0' + x;
+                first = 0;
+            } else {
+                special[t] = '0';
+            }
+        }
+    }
+    special[t] = '\0';
+    char rev[RES_SIZE] = "";
+    reverse(special, rev);
+    strcpy(special, rev);
+}
+
+s21_decimal set_bits(char* value) {
+    s21_decimal res;
     char *str = strtok(value, ".");
     int k = 2;
     char num[RES_SIZE] = "";
@@ -90,12 +189,13 @@ void set_bits(s21_decimal res, char* value) {
     while (str != NULL)
     {
         res.bits[k] = (int) strtol(str, NULL, 2);
-        printf("%u\n", res.bits[k]);
-        printf("str = %s\n",itoa(res.bits[k], 2));
+        //printf("%u\n", res.bits[k]);
+        //printf("str = %s\n",itoa(res.bits[k], 2));
         strcat(num, itoa(res.bits[k], 2));
         str = strtok(NULL, ".");
         k--;
     }
+    return res;
 }
 
 void get_res_char(char * res) {
@@ -255,6 +355,7 @@ char* itoa(unsigned int val, int base){
 
 void longIntIoBinaryChar(long int val, char* revers) {
     int n = 0, i = 0, size = 32, first = 1;
+    if (val < 0) val *= -1;
     char count[RES_SIZE] = "";
     for (int k = 0; k < 3; k++)
     {
