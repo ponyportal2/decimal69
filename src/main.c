@@ -11,6 +11,8 @@ typedef struct {
     unsigned int bits[4];
 }s21_decimal;
 
+unsigned int signDegreeToNumber (int sign, int degree);
+
 void decimalToBinary(s21_decimal decimal, char *binaryFull);
 void binaryToString(char *binaryFull, char *decimalString);
 bool stringToBinary(const char *decimalString, char *binaryString, int *degree);
@@ -28,7 +30,20 @@ int s21_floor(s21_decimal value, s21_decimal *result);
 int s21_truncate(s21_decimal value, s21_decimal *result);
 int s21_negate(s21_decimal value, s21_decimal *result);
 
+int s21_is_less(s21_decimal first, s21_decimal second);
+int s21_is_less_or_equal(s21_decimal first, s21_decimal second);
+int s21_is_greater(s21_decimal first, s21_decimal second);
+int s21_is_greater_or_equal(s21_decimal first, s21_decimal second);
+int s21_is_equal(s21_decimal first, s21_decimal second);
+int s21_is_not_equal(s21_decimal first, s21_decimal second);
+
 void findDegreeSign(unsigned int decimalBit3, int *degree, int *sign);
+void toOneDegree (char *firstString, char *secondString, int firstDegree, int secondDegree);
+int compareString(const char *firstString, const char *secondString, int firstDegree, int firstSign, int secondDegree, int secondSign);
+int convertForCompare(s21_decimal first, s21_decimal second);
+
+void subString(const char *firstString, const char *secondString, int firstDegree, int secondDegree, char *resultString);
+void divString(const char *firstString, const char *secondString, int firstDegree, int secondDegree, char *resultString);
 
 //void stringToDecimal(char *string, s21_decimal *decimal, int degree, int sign);
 //void DecimalToString(s21_decimal decimal, char *decimalString);
@@ -37,7 +52,7 @@ int main() {
     char binaryFull[SIZE] = {'\0'};
   //  binaryFull[97] = '\0';
     char decimalString[SIZE] = {'\0'};
-    int degree = 3, sign = 0;
+
     float dst = 0;
 
     decimal.bits[0] = 2122534536;
@@ -55,14 +70,70 @@ int main() {
  //printf("%s\n", binaryFull);
 // s21_from_int_to_decimal(-42134, &intCheck);
 //s21_from_decimal_to_float(decimal, &dst);
-s21_negate(decimal, &intCheck);
+//s21_negate(decimal, &intCheck);
+//655360
+//int degree = 32, sign = -1;
+/*
+unsigned int degreeSign = signDegreeToNumber(sign, degree);
+  s21_decimal x = {{95008, 0, 0, degreeSign}};
+  printf("%u\n", degreeSign);
+
+  s21_decimal z = {{0, 0, 0, 0}};
+  s21_round(x, &z);
+  char res1[1000], res2[1000] = "950 0 0 2147483648";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  printf("%s\n%s\n", res1, res2);
+  */
+ 
+ int degree = 0, sign = 1;
+ unsigned int degreeSign = signDegreeToNumber(sign, degree);
+ s21_decimal first = {{95008, 0, 12, degreeSign}};
+ s21_decimal second = {{95008, 0, 112, degreeSign}};
+ //printf("%d", s21_is_less(first, second));
+ char resultString[SIZE] = {'\0'};
+//subString("11111", "112", 0, 0, resultString);
+divString("4", "2", 0, 0, resultString);
+ printf("%s\n",resultString);
+//  printf("%d 1", err);
 //s21_from_float_to_decimal(78228169514264337593543950334.123446789, &intCheck);
     //strcpy(decimalStr, "456564566856754");
    // stringToDecimal(decimalStr, &decimal, 28, -1);
     //DecimalToBinary(decimalString, binaryString, MAX_LENGTH);
+
+    //negate если задать нулевой децимал что выводит оригинал
+    //если засунули в функцию степень больше 28 что будет
+    //везде ли банковское округление использовать
     return 0;
 }
 
+unsigned int signDegreeToNumber (int sign, int degree){
+    char binaryString[33];
+    if (sign == 1) {
+        binaryString[0] = '0';
+    } else {
+        binaryString[0] = '1';
+    }
+    for (int i = 1; i < 32; i++) {
+        binaryString[i] = '0';
+    }
+    binaryString[32] = '\0';
+    char binaryStack[40] = {'\0'};
+    int i = 0;
+    while (degree != 0) {
+        if (degree % 2 == 1) {
+            binaryStack[i] = '1';
+        } else {
+            binaryStack[i] = '0';
+        }
+        i++;
+        degree = degree / 2;
+    }
+    for (int i = 15, j = 0; j < strlen(binaryStack); i--, j++) {
+        binaryString[i] = binaryStack[j];
+    }
+    return strtol(binaryString, NULL, 2);
+}
 
 void findDegreeSign(unsigned int decimalBit3, int *degree, int *sign) {
     if (decimalBit3 == 0) {
@@ -100,16 +171,18 @@ void findDegreeSign(unsigned int decimalBit3, int *degree, int *sign) {
         i--;
     }
     char degreeString[10] = {'\0'};
-    int countDegree = 4;
+    int countDegree = 7;
     while (countDegree >= 0 && i != 0) {
         degreeString[countDegree] = binaryString[i];
         i--;
         countDegree--;
     }
     *degree = strtol(degreeString, NULL, 2);
+    /*
     if (*degree > 28) {
         *degree = 28;
     }
+    */
     }
 }
 
@@ -360,34 +433,34 @@ int s21_from_float_to_decimal(float src, s21_decimal *decimal) {
         (*decimal).bits[3] = 0;
     } else if (src > 79228162514264337593543950335. || src < -79228162514264337593543950335. || src == INFINITY || src == -INFINITY) {
         returnValue = 1;
-    } else {
-        if (src < 0) {
-            src = src * (-1);
+    } else  if (src != 0) {
+        if (saveSrc < 0) {
+            saveSrc = saveSrc * (-1);
             sign = -1;
         } else {
             sign = 1;
         }
         int eightNum = 0;
-        if ((int)src == 0) {
-            while ((int)src == 0) {
-                src = src * 10;
+        if ((int)saveSrc == 0) {
+            while ((int)saveSrc == 0) {
+                saveSrc = saveSrc * 10;
                 degree++;
             }
             for (int i = 2; i <= 7 && degree <= 28; i++, degree++){
-                src = src * 10;
+                saveSrc = saveSrc * 10;
             }
-            eightNum = (int)(src * 10) % 10;
-            string = (int)src;
+            eightNum = (int)(saveSrc * 10) % 10;
+            string = (int)saveSrc;
             if (eightNum >= 5) {
                 string++;
             }
-        } else if (src < 1000000) {
-            while (src < 1000000) {
-                src = src * 10;
+        } else if (saveSrc < 1000000) {
+            while (saveSrc < 1000000) {
+                saveSrc = saveSrc * 10;
                 degree++;
             }
-            eightNum = (int)(src * 10) % 10;
-            string = (int)src;
+            eightNum = (int)(saveSrc * 10) % 10;
+            string = (int)saveSrc;
             if (eightNum >= 5) {
                 string++;
             }
@@ -402,19 +475,30 @@ int s21_from_float_to_decimal(float src, s21_decimal *decimal) {
                 string++;
             }
         }
-    }
     char stringToDec[SIZE];
     sprintf(stringToDec, "%d", string);
+   // printf("%s\n", stringToDec);
     while (zeroCount != 1) {
         stringToDec[strlen(stringToDec) + 1] = '\0';
         stringToDec[strlen(stringToDec)] = '0'; 
         zeroCount /= 10;
     }
     char binaryString[SIZE] = {'\0'};
-    printf("%s\n", stringToDec);
+    while (stringToDec[strlen(stringToDec) - 1] == '0') {
+        stringToDec[strlen(stringToDec) - 1] = '\0';
+        degree--;
+    }
+  //  printf("%s\n", stringToDec);
     stringToBinary(stringToDec, binaryString, &degree);
     binaryToDecimal(decimal, binaryString, degree, sign);
-    printf("%u\n%u\n%u\n%u\n", (*decimal).bits[2], (*decimal).bits[1], (*decimal).bits[0], (*decimal).bits[3]);
+    } else {
+        (*decimal).bits[0] = 0;
+        (*decimal).bits[1] = 0;
+        (*decimal).bits[2] = 0;
+        (*decimal).bits[3] = 0;
+    }
+
+  //  printf("%u\n%u\n%u\n%u\n", (*decimal).bits[2], (*decimal).bits[1], (*decimal).bits[0], (*decimal).bits[3]);
     return returnValue;
 }
 
@@ -442,13 +526,15 @@ int s21_from_decimal_to_int(s21_decimal decimal, int *dst) {
 }
 
 int s21_from_decimal_to_float(s21_decimal decimal, float *dst) {
+    int returnValue = 0;
+    if ((void*)dst != NULL) {
     char binaryFull[110] = {'\0'};
     char decimalString[35] = {'\0'};
     int sign = 0, degree = 0;
     decimalToBinary(decimal, binaryFull);
     binaryToString(binaryFull, decimalString);
     findDegreeSign(decimal.bits[3], &degree, &sign);
-    printf("%s\n", decimalString);
+   // printf("%s\n", decimalString);
      *dst = decimalString[0] - '0';
     double degreeCount = 10;
     long double result = decimalString[0] - '0';
@@ -462,9 +548,12 @@ int s21_from_decimal_to_float(s21_decimal decimal, float *dst) {
             degreeCount *= 10;
         }
     }
-    *dst = (float)result;
-    printf("%e\n", *dst);
-    return 0;
+    *dst = sign * (float)result;
+    } else {
+        returnValue = 1;
+    }
+   // printf("%e\n", *dst);
+    return returnValue;
 }
 
 
@@ -476,17 +565,16 @@ int s21_round(s21_decimal value, s21_decimal *result) {
     decimalToBinary(value, binaryFull);
     binaryToString(binaryFull, decimalString);
     findDegreeSign(value.bits[3], &degree, &sign);
-    printf("%d\n", degree);
+  //  printf("%d\n", degree);
     int i = strlen(decimalString) - 1;
     char rememberLast = '\0';
-    printf("%s\n", decimalString);
+   // printf("%s\n", decimalString);
     while (degree != 0 && i >= 0) {
         rememberLast = decimalString[i];
         decimalString[i] = '\0';
         degree--;
         i--;
     }
-    int lastNumCounter = 1;
     if (rememberLast >= '5') {
         while (decimalString[i] == '9') {
             decimalString[i] = '0';
@@ -498,15 +586,22 @@ int s21_round(s21_decimal value, s21_decimal *result) {
             decimalString[strlen(decimalString) + 1] = '\0';
             decimalString[strlen(decimalString)] = '0';
         }
+        if (i == -1 && degree == 0) {
+            decimalString[0] = '1';
+        } else if (degree > 0) {
+            decimalString[0] = '0';
+        }
     }
-    printf("%s\n", decimalString);
+    degree = 0;
+   // printf("%s\n", decimalString);
     char binaryString[110] = {'\0'};
     overflow = stringToBinary(decimalString, binaryString, &degree);
-    printf("%s\n", binaryString);
+  //  printf("%s\n", binaryString);
+
     if (overflow == false) {
         binaryToDecimal(result, binaryString, degree, sign);
     }
-    printf("%u\n%u\n%u\n%u\n", (*result).bits[2], (*result).bits[1], (*result).bits[0], (*result).bits[3]);
+ //   printf("%u\n%u\n%u\n%u\n", (*result).bits[2], (*result).bits[1], (*result).bits[0], (*result).bits[3]);
     return overflow;
 }
 
@@ -519,10 +614,11 @@ int s21_floor(s21_decimal value, s21_decimal *result) {
     decimalToBinary(value, binaryFull);
     binaryToString(binaryFull, decimalString);
     findDegreeSign(value.bits[3], &degree, &sign);
-    printf("%d\n", degree);
+   // printf("%d\n", degree);
+
+ //   printf("%d\n", degree);
     int i = strlen(decimalString) - 1;
     char rememberLast = '\0';
-    printf("%s\n", decimalString);
     while (degree != 0 && i >= 0) {
         rememberLast = decimalString[i];
         decimalString[i] = '\0';
@@ -540,16 +636,25 @@ int s21_floor(s21_decimal value, s21_decimal *result) {
             decimalString[0] = '1';
             decimalString[strlen(decimalString) + 1] = '\0';
             decimalString[strlen(decimalString)] = '0';
+        } else if (decimalString[0] == '\0') {
+            decimalString[0] = '1';
+            decimalString[1] = '\0';
+            degree = 0;
         }
+    } else if (degree != 0) {
+        decimalString[0] = '0';
+        decimalString[1] = '\0';
+        degree = 0;
     }
-    printf("%s\n", decimalString);
+   // printf("%s\n", decimalString);
     char binaryString[110] = {'\0'};
     overflow = stringToBinary(decimalString, binaryString, &degree);
-    printf("%s\n", binaryString);
+  //  printf("%s\n", binaryString);
     if (overflow == false) {
         binaryToDecimal(result, binaryString, degree, sign);
     }
-    printf("%u\n%u\n%u\n", (*result).bits[2], (*result).bits[1], (*result).bits[0]);
+    
+ //   printf("%u\n%u\n%u\n", (*result).bits[2], (*result).bits[1], (*result).bits[0]);
     return overflow;
 }
 
@@ -561,23 +666,23 @@ int s21_truncate(s21_decimal value, s21_decimal *result) {
     decimalToBinary(value, binaryFull);
     binaryToString(binaryFull, decimalString);
     findDegreeSign(value.bits[3], &degree, &sign);
-    printf("%d\n", degree);
+  //  printf("%d\n", degree);
     int i = strlen(decimalString) - 1;
-    printf("%s\n", decimalString);
+ //   printf("%s\n", decimalString);
     while (degree != 0 && i >= 0) {
         decimalString[i] = '\0';
         degree--;
         i--;
     }
     int lastNumCounter = 1;
-    printf("%s\n", decimalString);
+  //  printf("%s\n", decimalString);
     char binaryString[110] = {'\0'};
     overflow = stringToBinary(decimalString, binaryString, &degree);
-    printf("%s\n", binaryString);
+  //  printf("%s\n", binaryString);
     if (overflow == false) {
         binaryToDecimal(result, binaryString, degree, sign);
     }
-    printf("%u\n%u\n%u\n", (*result).bits[2], (*result).bits[1], (*result).bits[0]);
+  //  printf("%u\n%u\n%u\n", (*result).bits[2], (*result).bits[1], (*result).bits[0]);
     return overflow;
 }
 
@@ -598,21 +703,255 @@ int s21_negate(s21_decimal value, s21_decimal *result) {
         i++;
         value.bits[3] = value.bits[3] / 2;
     }
-    if (oldString[31] == '0') {
-        oldString[31] = '1';
-    } else {
-        oldString[31] = '0';
-    }
-    for (int j = 31, k = 0; k <= i; k++, j--){
+    for (int j = 31, k = 0; k <= 31; k++, j--){
         reverseString[j] = oldString[k];
     }
+    if (oldString[31] == '0') {
+        reverseString[0] = '1';
+    } else {
+        reverseString[0] = '0';
+    }
+    reverseString[32] = '\0';
     (*result).bits[0] = value.bits[0];
     (*result).bits[1] = value.bits[1];
     (*result).bits[2] = value.bits[2];
     (*result).bits[3] = strtol(reverseString, NULL, 2);
-    printf("%s\n", reverseString);
-    printf("%ld\n", strtol(reverseString, NULL, 2));
+   // printf("%s\n", reverseString);
+  //  printf("%ld\n", strtol(reverseString, NULL, 2));
     return 0;
+}
+
+int s21_is_less(s21_decimal first, s21_decimal second) {
+    int returnValue = 0;
+    if (convertForCompare(first, second) == 2) {
+        returnValue = 1;
+    }
+    return returnValue;
+}
+
+int s21_is_less_or_equal(s21_decimal first, s21_decimal second) {
+    int returnValue = 0;
+    if (convertForCompare(first, second) != 1) {
+        returnValue = 1;
+    }
+    return returnValue;
+}
+
+int s21_is_greater(s21_decimal first, s21_decimal second) {
+    int returnValue = 0;
+    if (convertForCompare(first, second) == 1) {
+        returnValue = 1;
+    }
+    return returnValue;
+}
+
+int s21_is_greater_or_equal(s21_decimal first, s21_decimal second) {
+    int returnValue = 0;
+    if (convertForCompare(first, second) != 2) {
+        returnValue = 1;
+    }
+    return returnValue;
+}
+
+int s21_is_equal(s21_decimal first, s21_decimal second) {
+    int returnValue = 0;
+    if (convertForCompare(first, second) == 0) {
+        returnValue = 1;
+    }
+    return returnValue;
+}
+
+int s21_is_not_equal(s21_decimal first, s21_decimal second) {
+    int returnValue = 0;
+    if (convertForCompare(first, second) != 0) {
+        returnValue = 1;
+    }
+    return returnValue;
+}
+
+int convertForCompare(s21_decimal first, s21_decimal second) {
+    char binaryFirst[SIZE] = {'\0'};
+    char decimalFirst[SIZE] = {'\0'};
+    int degreeFirst = 0, signFirst = 0;
+    decimalToBinary(first, binaryFirst);
+    binaryToString(binaryFirst, decimalFirst);
+    findDegreeSign(first.bits[3], &degreeFirst, &signFirst);
+
+    char binarySecond[SIZE] = {'\0'};
+    char decimalSecond[SIZE] = {'\0'};
+    int degreeSecond = 0, signSecond = 0;
+    decimalToBinary(second, binarySecond);
+    binaryToString(binarySecond, decimalSecond);
+    findDegreeSign(second.bits[3], &degreeSecond, &signSecond);
+
+    return compareString(decimalFirst, decimalSecond, degreeFirst, signFirst, degreeSecond, signSecond);
+}
+
+int compareString(const char *firstString, const char *secondString, int firstDegree, int firstSign, int secondDegree, int secondSign) {
+    char firstCopy[SIZE] = {'\0'};
+    char secondCopy[SIZE] = {'\0'};
+    strcpy(firstCopy, firstString);
+    strcpy(secondCopy, secondString);
+    int returnValue = 0;
+   // printf("%s\n%s\n", firstCopy, secondCopy);
+ //   printf("%lu %lu\n", strlen(firstCopy), strlen(secondCopy));
+ if (firstSign > secondSign) {
+    returnValue = 1;
+ } else if (firstSign < secondSign) {
+    returnValue = 2;
+ } else {
+    toOneDegree(firstCopy, secondCopy, firstDegree, secondDegree);
+   // printf("%s\n%s\n", firstCopy, secondCopy);
+  if (strlen(secondCopy) > strlen(firstCopy)) {
+    returnValue = 2;
+  } else if (strlen(secondCopy) < strlen(firstCopy)) {
+    returnValue = 1;
+  } else {
+    int i = 0;
+    while (returnValue == 0 && i < strlen(secondCopy)) {
+        if (firstCopy[i] > secondCopy[i]) {
+            returnValue = 1;
+        } else if (firstCopy[i] < secondCopy[i]) {
+            returnValue = 2;
+        }
+        i++;
+    }
+  }
+ }
+ if (returnValue == 1 && firstSign == -1 && secondSign == -1) {
+    returnValue = 2;
+ } else if (returnValue == 2 && firstSign == -1 && secondSign == -1) {
+    returnValue = 1;
+ }
+    return returnValue;
+}
+
+void toOneDegree(char *firstString, char *secondString, int firstDegree, int secondDegree) {
+    char addZero[2] = {"0\0"};
+    if (firstDegree > secondDegree) {
+        for (int i = 0; i < firstDegree - secondDegree; i++) {
+            strcat(secondString, addZero);
+        }
+    } else if (firstDegree < secondDegree) {
+        for (int i = 0; i < secondDegree - firstDegree; i++) {
+            strcat(firstString, addZero);
+        }
+    }
+}
+
+void subString(const char *firstString, const char *secondString, int firstDegree, int secondDegree, char *resultString) {
+    char firstCopy[SIZE] = {'\0'};
+    char secondCopy[SIZE] = {'\0'};
+    strcpy(firstCopy, firstString);
+    strcpy(secondCopy, secondString);
+    toOneDegree(firstCopy, secondCopy, firstDegree, secondDegree);
+    int j = strlen(firstCopy) - 1;
+    int k = 0;
+    for (int i = strlen(secondCopy) - 1; i >= 0; i--, j--, k++) {
+        if (firstCopy[j] >= secondCopy[i]) {
+            firstCopy[j] = firstCopy[j] - secondCopy[i] + '0';
+        } else {
+            firstCopy[j] = (firstCopy[j] + '9' + 1 - '0') - secondCopy[i] + '0';
+            if (firstCopy[j - 1] != '0') {
+                firstCopy[j - 1]--;
+            } else {
+                int zeroCounter = 1;
+                while (firstCopy[j - zeroCounter] == '0') {
+                    firstCopy[j - zeroCounter] = '9';
+                    zeroCounter++;
+                }
+                firstCopy[j - zeroCounter]--;
+            }
+        }
+    }
+
+    strcat(resultString, firstCopy);
+   int i = 0;
+   while (resultString[i] == '0') {
+    i++;
+   }
+   for (int j = 0; j <= strlen(resultString); j++, i++) {
+    resultString[j] = resultString[i];
+   // resultString[strlen(resultString) - 1] = '\0';
+   }
+   if (strlen(resultString) == 0) {
+    resultString[0] = '0';
+    resultString[1] = '\0';
+   }
+  // printf("%lu\n", strlen(resultString));
+   // printf("%s\n", resultString);
+}
+
+void divString(const char *firstString, const char *secondString, int firstDegree, int secondDegree, char *resultString) {
+    char firstCopy[SIZE] = {'\0'};
+    char secondCopy[SIZE] = {'\0'};
+    int degree = 0;
+    strcpy(firstCopy, firstString);
+    strcpy(secondCopy, secondString);
+    toOneDegree(firstCopy, secondCopy, firstDegree, secondDegree);
+    char stringToSub[SIZE] = {'\0'};
+    int counterSub = 1, counterFirst = 1;
+    stringToSub[0] = firstCopy[0];
+    stringToSub[1] = '\0';
+    resultString[0] = '0';
+    int resultCounter = 0;
+    bool start = false;
+    while (degree != 28 && (stringToSub[0] != '0' || firstCopy[counterFirst] != '\0')) {
+        resultString[resultCounter] = '0';
+        while (compareString(stringToSub, secondCopy, 0, 1, 0, 1) == 2 && (counterFirst < strlen(firstCopy) || stringToSub[0] != '0')) {
+            if (firstCopy[counterFirst] != '\0') {
+                stringToSub[counterSub] = firstCopy[counterFirst];
+                stringToSub[counterSub + 1] = '\0';
+                counterFirst++;
+                if (stringToSub[0] != '0') {
+                    counterSub++;
+                }
+                if (start) {
+                    resultCounter++;
+                    resultString[resultCounter] = '0';
+                }
+            } else {
+                stringToSub[counterSub] = '0';
+                stringToSub[counterSub + 1] = '\0';
+                if (stringToSub[0] != '0') {
+                    counterSub++;
+                }
+                degree++;
+                if (start) {
+                    resultCounter++;
+                    resultString[resultCounter] = '0';
+                }
+            }
+            start = true;
+        } 
+         
+         if (stringToSub[0] == '0') {
+           // strcat(resultString, stringToSub);
+            counterFirst++;
+        
+          //  resultCounter++;
+           // printf("%s\n", stringToSub);
+            
+         } else {
+        while (compareString(stringToSub, secondCopy, 0, 1, 0, 1) == 1 || 
+        compareString(stringToSub, secondCopy, 0, 1, 0, 1) == 0) {
+            char result[SIZE] = {'\0'};
+            subString(stringToSub, secondCopy, 0, 0, result);
+            strcpy(stringToSub, result);
+            resultString[resultCounter]++;
+        }
+        }
+        resultCounter++;
+        if (stringToSub[0] != '0') {
+            counterSub = strlen(stringToSub);
+        } else {
+            counterSub = 0;
+        }
+        start = false;
+    }
+   // printf("%s\n", stringToSub);
+    resultString[resultCounter] = '\0';
+  //  printf("%d\n", degree);
 }
 /*
 void DecimalToString(s21_decimal decimal, char *decimalString) {
