@@ -1,6 +1,57 @@
 #include "s21_decimal.h"
 
-s21_decimal set_result(char * res, int flag, int sign) {\
+int bin_char_to_int(char* binNum, int flag, int sign) {
+    int val = (int) bin_char_to_float(binNum, flag, sign);
+    return val;
+}
+
+float bin_char_to_float(char* binNum, int flag, int sign) {
+    float val = 0;
+    for (size_t i = 0; i < strlen(binNum); i++) {
+        val += (binNum[i] - '0') * pow(2, i);
+    }
+    switch(flag) {
+        case 1: val *= -1; break;
+        case 0: break;
+        default: break; 
+    }
+    val /= pow(10, sign);
+    return val;
+}
+
+int get_bin_char_flag_and_sign(s21_decimal src, char* num, int *flag, int *sign) {
+    int no_error = 1;
+    from_decimal_to_bin_char(src, num);
+    getFlagAndPoint(src, flag, sign);
+    //printf("\nnum = %s\nflag = %d\npoint = %d\n", num, *flag, *sign);
+    //reverse(num);
+    return no_error;
+}
+
+int s21_from_decimal_to_int(s21_decimal src, int *dst) {
+    char num[RES_SIZE] = "";
+    int flag = 0, sign = 0;
+    int no_error = get_bin_char_flag_and_sign(src, num, &flag, &sign);
+    *dst = bin_char_to_int(num, flag, sign);
+    return no_error;
+}
+
+int s21_from_decimal_to_float(s21_decimal src, float *dst) {
+    char num[RES_SIZE] = "";
+    int flag = 0, sign = 0;
+    int no_error = get_bin_char_flag_and_sign(src, num, &flag, &sign);
+    *dst = bin_char_to_float(num, flag, sign);
+    return no_error;
+}
+
+int s21_from_bin_char_to_decimal(char* src, int flag, int sign, s21_decimal *dst) {
+    int no_error = 1;
+    reverse(src);
+    *dst = get_result(src, flag, sign);
+    return no_error;
+}
+
+s21_decimal set_result(char * res, int flag, int sign) {
     s21_decimal d = set_bits(res);
     char special[RES_SIZE] = "";
     getBits3Char(special, flag, sign);
@@ -17,7 +68,7 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
     int val = (int) (src * pow(10, sign));
     char res[RES_SIZE] = "";
     longIntIoBinaryChar((long int)val, res);
-    printf("res = %s\nsrc = %f\nstr = %s\nsign! = %d\nflag = %d\n", res, src, str, sign, flag);
+    //printf("res = %s\nsrc = %f\nstr = %s\nsign! = %d\nflag = %d\n", res, src, str, sign, flag);
     *dst = set_result(res, flag, sign);
     return no_error;
 }
@@ -30,7 +81,7 @@ int s21_from_int_to_decimal(int src, s21_decimal *dst) {
     set_sign_and_flag(str, &sign, &flag);
     char res[RES_SIZE] = "";
     longIntIoBinaryChar((long int)src, res);
-    printf("res = %s\nsrc = %d\nstr = %s\nsign! = %d\nflag = %d\n", res, src, str, sign, flag);
+    //printf("res = %s\nsrc = %d\nstr = %s\nsign! = %d\nflag = %d\n", res, src, str, sign, flag);
     *dst = set_result(res, flag, sign);
     return no_error;
 }
@@ -89,19 +140,21 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     return no_error;
 }
 
-int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
-    int no_error = 1;
-    char num1[RES_SIZE] = "";
-    char num2[RES_SIZE] = "";
+void from_decimal_to_bin_char(s21_decimal src, char* num) {
     for (int i = 2; i >= 0; i--) {
-        strcat(num1, itoa(value_1.bits[i], 2));
-        strcat(num2, itoa(value_2.bits[i], 2));
+        strcat(num, itoa(src.bits[i], 2));
     }
-    int sign1 = 0, sign2 = 0, flag1 = 0, flag2 = 0;
-    getFlagAndPoint(value_1, &flag1, &sign1);
-    getFlagAndPoint(value_2, &flag2, &sign2);
-    if (sign1 != sign2) {
-        (sign1 > sign2)? addZeroAfterSign(num2, sign1, &sign2) : addZeroAfterSign(num1, sign2, &sign1);
+}
+
+void format_num_for_operation(s21_decimal value_1, s21_decimal value_2, char* num1, char* num2, int *flag1, int *flag2, int *sign1, int *sign2) {
+    
+    //reverse(num1);
+   // reverse(num2);
+    get_bin_char_flag_and_sign(value_1, num1, flag1, sign1);
+    get_bin_char_flag_and_sign(value_2, num2, flag2, sign2);
+    printf("\nnum1 = %s,\nnum2 = %s\n", num1, num2);
+    if (*sign1 != *sign2) {
+        (*sign1 > *sign2)? addZeroAfterSign(num2, *sign1, sign2) : addZeroAfterSign(num1, *sign2, sign1);
     }
     int size1 = (int) strlen(num1);
     int size2 = (int) strlen(num2);
@@ -109,6 +162,14 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
         (size1 > size2)? addZeroBeforeNumber(num2, size1, size2) : addZeroBeforeNumber(num1, size2, size1);
     }
     printf("\nnum1 = %s,\nnum2 = %s\n", num1, num2);
+}
+
+int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
+    int no_error = 1;
+    char num1[RES_SIZE] = "";
+    char num2[RES_SIZE] = "";
+    int sign1 = 0, sign2 = 0, flag1 = 0, flag2 = 0;
+    format_num_for_operation(value_1, value_2, num1, num2, &flag1, &flag2, &sign1, &sign2);
     char res[RES_SIZE] = ""; int j = 0, tmp = 0, val = 0;
     int count = 0;
         for (int i = (int)strlen(num1) - 1; i >= 0; i--) {
@@ -135,10 +196,10 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     return no_error;
 }
 
-s21_decimal get_result(char * res, int flag, int sign) {
+s21_decimal get_result(char * binChar, int flag, int sign) {
     char temp[RES_SIZE] = "";
-    get_res_char(res);
-    s21_decimal d = set_bits(res);
+    get_res_char(binChar);
+    s21_decimal d = set_bits(binChar);
     char special[RES_SIZE] = "";
     getBits3Char(special, flag, sign);
     d.bits[3] = (int) strtol(special, NULL, 2);
@@ -175,9 +236,7 @@ void getBits3Char(char* special, int flag, int sign) {
         }
     }
     special[t] = '\0';
-    char rev[RES_SIZE] = "";
-    reverse(special, rev);
-    strcpy(special, rev);
+    reverse(special);
 }
 
 s21_decimal set_bits(char* value) {
@@ -219,17 +278,18 @@ void get_res_char(char * res) {
             temp[i] = '\0';
         }
     }
-    char rev[RES_SIZE] = "";
-    reverse(temp, rev);
-    strcpy(res, rev);
+    reverse(temp);
+    strcpy(res, temp);
 }
 
-void reverse(char *value, char* rev) {
+void reverse(char *value) {
+    char rev[RES_SIZE] = "";
     size_t l = strlen(value);
     for(int i = 0; i < l; i++) {
         rev[i] = value[l - 1 - i];
     }
     rev[l] = '\0';
+    strcpy(value, rev);
 }
 
 s21_decimal parseFromBinToDecimal(char *value) {
@@ -446,7 +506,7 @@ void getFlagAndPoint(s21_decimal value, int* flag, int* point) {
         }
     }
     N[j] = '\0';
-    for (size_t i = 0; i < strlen(N); i++) {
+    for (size_t i = 0; i < strlen(N); i++) { //rewr
         *point += (N[i] - '0') * pow(2, i);
     }
 }
