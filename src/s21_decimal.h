@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+void decimMulti(char* a, char* b);
 void decimFirstStepMulti(char* a, char* b, char** result);
 void reAddZero(char* input, int dotPos);
 void matrixToString(char** input, char* output);

@@ -16,8 +16,10 @@ int main() {
   // char a[AB_SIZE] = "875.84758623475897345878784953789";
   // char b[AB_SIZE] = "46237647823.64762374";
 
+  // здесть функция конвертации, вставить потом
+
   char a[MAX_INPUT_SIZE] = "42354366634.00014758623475897345878784953789";
-  char b[MAX_INPUT_SIZE] = "0.00004623764782364762374";
+  char b[MAX_INPUT_SIZE] = "0.000104623764782364762374";
 
   int dotPos = 0;
 
@@ -54,23 +56,23 @@ int main() {
 
   // SUBTRACTION:
   // ------------
-  reverse(a);
-  reverse(b);
-  decimFirstStep(a, b, result, false);  // dont forget sub/add specifier
-  decimSecondStepSub(result);
-  int resultSize = sizeDetector(result);
-  reverseCharMatrix(result, resultSize);
-  char outputString[1024] = {0};
-  printer(result);
-  matrixToString(result, outputString);
-  reAddZero(outputString, dotPos);
-  printf("%s", outputString);
+  // reverse(a);
+  // reverse(b);
+  // decimFirstStep(a, b, result, false);  // dont forget sub/add specifier
+  // decimSecondStepSub(result);
+  // int resultSize = sizeDetector(result);
+  // reverseCharMatrix(result, resultSize);
+  // char outputString[1024] = {0};
+  // printer(result);
+  // matrixToString(result, outputString);
+  // reAddZero(outputString, dotPos);
+  // printf("%s", outputString);
 
   // MULTIPLICATION:
   // ---------------
-  // reverse(a);
-  // reverse(b);
-  // decimFirstStepMulti(a, b, result);
+  reverse(a);
+  reverse(b);
+  decimMulti(a, b);
   // decimSecondStepSub(result);
   // int resultSize = sizeDetector(result);
   // reverseCharMatrix(result, resultSize);
@@ -208,20 +210,20 @@ void minusTen(char* input) {
 }
 
 void place(int current, char** inputMatrix, char* tempForItoa, int j) {
-  // printf("[%i]", current);
+  printf("[%i]", current);
   if (current < 0) {
     itoa(current, tempForItoa);
-    // printf("! %s\n", tempForItoa);
+    // printf("[%s]\n", tempForItoa);
   } else {
     itoa(current, tempForItoa);
-    // printf("* %s\n", tempForItoa);
+    // printf("[%s]\n", tempForItoa);
   }
   if (strcmp(tempForItoa, "-48") == 0) {
     strcpy(inputMatrix[j], "\0");
   } else {
     strcpy(inputMatrix[j], tempForItoa);
   }
-  // printf("[%s]\n", inputMatrix[j]);
+  printf("[%s]\n", inputMatrix[j]);
 }
 
 void itoa(long long num, char* src) {
@@ -410,71 +412,86 @@ void reAddZero(char* input, int dotPos) {
   strcpy(input, tempStr);
 }
 
-void decimMulti(char* a, char* b, char** result) {
+void decimMulti(char* a, char* b) {
   // UGLY NECESSARY CALLOCS:
   // -----------------------
-  char** subProducts = calloc(MAX_ATOMS, sizeof(char*));
+  char*** subProducts = calloc(MAX_ATOMS, sizeof(char**));
   for (int i = 0; i < MAX_ATOMS; i++) {
-    result[i] = calloc(ATOM_SIZE, sizeof(char));
+    subProducts[i] = calloc(MAX_ATOMS, sizeof(char*));
+    for (int j = 0; j < MAX_ATOMS; j++) {
+      subProducts[i][j] = calloc(ATOM_SIZE, sizeof(char));
+    }
   }
 
-  bool AEnded = false;
-  bool BEnded = false;
-  int ai = 0;
-  int bi = 0;
-  int curLineResult = -2147483640;
+  // bool AEnded = false;
+  // bool BEnded = false;
+  // int curLineResult = -2147483640;
   char* tempForItoa = calloc(1024, sizeof(char));
-  bool whileBreak = false;
+  // bool whileBreak = false;
   int aLen = strlen(a);
   int bLen = strlen(b);
 
   for (int ai = 0; ai < aLen; ai++) {
     for (int bi = 0; bi < bLen; bi++) {
       int current = (a[ai] - '0') * (b[bi] - '0');
-      place(current, subProducts, tempForItoa, j);
+      place(current, subProducts[bi], tempForItoa, ai);
     }
-    ai++;
   }
 
-  while (whileBreak == false) {
-    if (a[i] == '\0') AEnded = true;
-    if (b[i] == '\0') BEnded = true;
-    if (AEnded == true && BEnded == true) {
-      whileBreak = true;
+  // decimSecondStepSub(result);
+  for (size_t i = 0; i < MAX_ATOMS; i++) {
+    int resultSize = sizeDetector(subProducts[i]);
+    reverseCharMatrix(subProducts[i], resultSize);
+    char outputString[1024] = {0};
+    if (subProducts[i][0][0] != '\0') {
+      printer(subProducts[i]);
     }
-    int current = 0;
-    if (AEnded != true && BEnded != true) {
-      current = (a[i] - '0') * (b[i] - '0');
-      place(current, result, tempForItoa, j);
-      printf("[%s]\n", get(result, j));
-    } else if (AEnded) {
-      current = (b[i] - '0');
-      place(current, result, tempForItoa, j);
-    } else if (BEnded) {
-      current = (a[i] - '0');
-      place(current, result, tempForItoa, j);
-    }
-    j++;
-    i++;
+    matrixToString(subProducts[i], outputString);
+    // reAddZero(outputString, dotPos);
+    // if (strlen(outputString) > 0) {
+    //   printf("%s\n", outputString);
+    // }
   }
+
+  // while (whileBreak == false) {
+  //   if (a[i] == '\0') AEnded = true;
+  //   if (b[i] == '\0') BEnded = true;
+  //   if (AEnded == true && BEnded == true) {
+  //     whileBreak = true;
+  //   }
+  //   int current = 0;
+  //   if (AEnded != true && BEnded != true) {
+  //     current = (a[i] - '0') * (b[i] - '0');
+  //     place(current, result, tempForItoa, j);
+  //     printf("[%s]\n", get(result, j));
+  //   } else if (AEnded) {
+  //     current = (b[i] - '0');
+  //     place(current, result, tempForItoa, j);
+  //   } else if (BEnded) {
+  //     current = (a[i] - '0');
+  //     place(current, result, tempForItoa, j);
+  //   }
+  //   j++;
+  //   i++;
+  // }
   if (tempForItoa) free(tempForItoa);
 
-  int i = 0;
-  char* tempForItoa1 = calloc(1024, sizeof(char));
-  while (strlen(get(result, i)) > 0) {
-    if (atoi(result[i]) > 9) {
-      if (result[i + 1][0] != '\0') {
-        itoa(atoi(result[i + 1]) + 1, tempForItoa1);
-        strcpy(result[i + 1], tempForItoa1);
-      } else {
-        result[i + 1][0] = '1';
-      }
-      minusTen(result[i]);
-    }
-    i++;
-  }
+  // int i = 0;
+  // char* tempForItoa1 = calloc(1024, sizeof(char));
+  // while (strlen(get(result, i)) > 0) {
+  //   if (atoi(result[i]) > 9) {
+  //     if (result[i + 1][0] != '\0') {
+  //       itoa(atoi(result[i + 1]) + 1, tempForItoa1);
+  //       strcpy(result[i + 1], tempForItoa1);
+  //     } else {
+  //       result[i + 1][0] = '1';
+  //     }
+  //     minusTen(result[i]);
+  //   }
+  //   i++;
+  // }
 
-  if (firstStr) free(firstStr);
+  // if (firstStr) free(firstStr);
 }
 
 // HOMYACHU:
