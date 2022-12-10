@@ -1,8 +1,8 @@
 tezt:
-	gcc -Wextra -Wall -Werror *.c  -lm
+	gcc -g -Wextra -Wall -Werror *.c -lm
 	cppcheck *.c
 	python3 ../linters/cpplint.py --extensions=c *.c
-	valgrind --leak-check=yes -q ./a.out
+	valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all -q ./a.out
 
 teztmac:
 	gcc -Wextra -Wall -Werror *.c  -lm

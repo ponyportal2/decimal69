@@ -122,7 +122,7 @@ int main() {
 
   // FREEING:
   // --------
-  for (int i = 0; i < ATOM_SIZE; i++) {
+  for (int i = 0; i < MAX_MULT_SUBPRODUCTS; i++) {
     if (result[i]) free(result[i]);
   }
   if (result) free(result);
@@ -210,7 +210,7 @@ void minusTen(char* input) {
 }
 
 void place(int current, char** inputMatrix, char* tempForItoa, int j) {
-  printf("[%i]", current);
+  // printf("[%i]", current);
   if (current < 0) {
     itoa(current, tempForItoa);
     // printf("[%s]\n", tempForItoa);
@@ -223,7 +223,7 @@ void place(int current, char** inputMatrix, char* tempForItoa, int j) {
   } else {
     strcpy(inputMatrix[j], tempForItoa);
   }
-  printf("[%s]\n", inputMatrix[j]);
+  // printf("[%s]\n", inputMatrix[j]);
 }
 
 void itoa(long long num, char* src) {
@@ -297,9 +297,9 @@ void printer(char** result) {
   printf("out: [");
   do {
     if (i == 0) {
-      printf("%s", result[i]);
+      printf("%2s", result[i]);
     } else {
-      printf(",%s", result[i]);
+      printf(",%2s", result[i]);
     }
     i++;
   } while (s21_strlen(result[i]) > 0);
@@ -433,8 +433,12 @@ void decimMulti(char* a, char* b) {
 
   for (int ai = 0; ai < aLen; ai++) {
     for (int bi = 0; bi < bLen; bi++) {
-      int current = (a[ai] - '0') * (b[bi] - '0');
-      place(current, subProducts[bi], tempForItoa, ai);
+      if ((b[bi] - '0') == 0) {
+        // do nothing
+      } else {
+        int current = (a[ai] - '0') * (b[bi] - '0');
+        place(current, subProducts[bi], tempForItoa, ai);
+      }
     }
   }
 
@@ -475,6 +479,14 @@ void decimMulti(char* a, char* b) {
   //   i++;
   // }
   if (tempForItoa) free(tempForItoa);
+
+  for (int i = 0; i < MAX_ATOMS; i++) {
+    for (int j = 0; j < MAX_ATOMS; j++) {
+      if (subProducts[i][j]) free(subProducts[i][j]);
+    }
+    if (subProducts[i]) free(subProducts[i]);
+  }
+  if (subProducts) free(subProducts);
 
   // int i = 0;
   // char* tempForItoa1 = calloc(1024, sizeof(char));
