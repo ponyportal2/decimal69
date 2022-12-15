@@ -1,16 +1,16 @@
-#include "vFuncs.h"
+#include "vasFuncs.h"
 
 int s21_add_pos_10String(char* a, char* b, char* result) {
   // DONT FORGET THAT v10StringFirstStep REQUIRES ADDITION/SUBTRACTION SPECIFIER
   int dotPos = 0;
-  char localA[MAX_INPUT_SIZE + 1] = {0};
-  char localB[MAX_INPUT_SIZE + 1] = {0};
+  char localA[VAS_INPUT_SIZE_MAX + 1] = {0};
+  char localB[VAS_INPUT_SIZE_MAX + 1] = {0};
   strcpy(localA, a);
   strcpy(localB, b);
 
-  char** localResult = calloc(MAX_MULT_SUBPRODUCTS, sizeof(char*));
-  for (int i = 0; i < MAX_MULT_SUBPRODUCTS; i++) {
-    localResult[i] = calloc(MULT_SUBPRODUCT_SIZE, sizeof(char));
+  char** localResult = calloc(VAS_MULTIPLY_SUBPRODUCTS, sizeof(char*));
+  for (int i = 0; i < VAS_MULTIPLY_SUBPRODUCTS; i++) {
+    localResult[i] = calloc(VAS_MULTIPLY_SUBPRODUCT_SIZE, sizeof(char));
   }
 
   deDot(localA, localB, &dotPos);
@@ -30,7 +30,7 @@ int s21_add_pos_10String(char* a, char* b, char* result) {
     reAddZero(outputString, dotPos);
   }
 
-  for (int i = 0; i < MAX_MULT_SUBPRODUCTS; i++) {
+  for (int i = 0; i < VAS_MULTIPLY_SUBPRODUCTS; i++) {
     if (localResult[i]) free(localResult[i]);
   }
   if (localResult) free(localResult);
@@ -46,14 +46,14 @@ int s21_add_pos_10String(char* a, char* b, char* result) {
 int s21_sub_pos_10String(char* a, char* b, char* result) {
   // DONT FORGET THAT v10StringFirstStep REQUIRES ADDITION/SUBTRACTION SPECIFIER
   int dotPos = 0;
-  char localA[MAX_INPUT_SIZE + 1] = {0};
-  char localB[MAX_INPUT_SIZE + 1] = {0};
+  char localA[VAS_INPUT_SIZE_MAX + 1] = {0};
+  char localB[VAS_INPUT_SIZE_MAX + 1] = {0};
   strcpy(localA, a);
   strcpy(localB, b);
 
-  char** localResult = calloc(MAX_MULT_SUBPRODUCTS, sizeof(char*));
-  for (int i = 0; i < MAX_MULT_SUBPRODUCTS; i++) {
-    localResult[i] = calloc(MULT_SUBPRODUCT_SIZE, sizeof(char));
+  char** localResult = calloc(VAS_MULTIPLY_SUBPRODUCTS, sizeof(char*));
+  for (int i = 0; i < VAS_MULTIPLY_SUBPRODUCTS; i++) {
+    localResult[i] = calloc(VAS_MULTIPLY_SUBPRODUCT_SIZE, sizeof(char));
   }
 
   deDot(localA, localB, &dotPos);
@@ -73,7 +73,7 @@ int s21_sub_pos_10String(char* a, char* b, char* result) {
     reAddZero(outputString, dotPos);
   }
 
-  for (int i = 0; i < MAX_MULT_SUBPRODUCTS; i++) {
+  for (int i = 0; i < VAS_MULTIPLY_SUBPRODUCTS; i++) {
     if (localResult[i]) free(localResult[i]);
   }
   if (localResult) free(localResult);
@@ -154,11 +154,11 @@ void v10StringSecondStepSub(char** localResult) {
 // DECIM MULTI:
 // -----------------------------------
 void decimMulti(char* a, char* b) {
-  char*** subProducts = calloc(MAX_ATOMS, sizeof(char**));
-  for (int i = 0; i < MAX_ATOMS; i++) {
-    subProducts[i] = calloc(MAX_ATOMS, sizeof(char*));
-    for (int j = 0; j < MAX_ATOMS; j++) {
-      subProducts[i][j] = calloc(ATOM_SIZE, sizeof(char));
+  char*** subProducts = calloc(VAS_ATOMS_MAX, sizeof(char**));
+  for (int i = 0; i < VAS_ATOMS_MAX; i++) {
+    subProducts[i] = calloc(VAS_ATOMS_MAX, sizeof(char*));
+    for (int j = 0; j < VAS_ATOMS_MAX; j++) {
+      subProducts[i][j] = calloc(VAS_ATOM_SIZE, sizeof(char));
     }
   }
   // bool AEnded = false;
@@ -180,7 +180,7 @@ void decimMulti(char* a, char* b) {
     }
   }
   // v10StringSecondStepSub(localResult);
-  for (size_t i = 0; i < MAX_ATOMS; i++) {
+  for (size_t i = 0; i < VAS_ATOMS_MAX; i++) {
     int resultSize = matrixSizeDetector(subProducts[i]);
     reverseCharMatrix(subProducts[i], resultSize);
     char outputString[1024] = {0};
@@ -216,8 +216,8 @@ void decimMulti(char* a, char* b) {
   // }
   if (tempForItoa) free(tempForItoa);
 
-  for (int i = 0; i < MAX_ATOMS; i++) {
-    for (int j = 0; j < MAX_ATOMS; j++) {
+  for (int i = 0; i < VAS_ATOMS_MAX; i++) {
+    for (int j = 0; j < VAS_ATOMS_MAX; j++) {
       if (subProducts[i][j]) free(subProducts[i][j]);
     }
     if (subProducts[i]) free(subProducts[i]);
@@ -293,7 +293,7 @@ void itoa(long long num, char* src) {
 }
 
 void reverseString(char* string) {
-  char temp[MAXLINE_FOR_REVERSE];
+  char temp[VAS_REVERSE_MAXLINE];
   strcpy(temp, string);
   int length = s21_strlen(string);
   int i;
@@ -346,10 +346,10 @@ void matrixPrinter(char** localResult) {
 }
 
 void deDot(char* a, char* b, int* dotPos) {
-  char aCpy[MAX_INPUT_SIZE + 1] = {0};
+  char aCpy[VAS_INPUT_SIZE_MAX + 1] = {0};
   strcpy(aCpy, a);
 
-  char bCpy[MAX_INPUT_SIZE + 1] = {0};
+  char bCpy[VAS_INPUT_SIZE_MAX + 1] = {0};
   strcpy(bCpy, b);
   // -----------------------WHAT IS NEEDED:------------------------
   // char a[TEST_VALUE_SIZE] = "        875.84758623475897345878784953789";
@@ -361,10 +361,10 @@ void deDot(char* a, char* b, int* dotPos) {
   bool BDotFound = false;
   bool ADotParsed = false;
   bool BDotParsed = false;
-  char ALeftPart[MAX_INPUT_SIZE * 2] = {0};
-  char BLeftPart[MAX_INPUT_SIZE * 2] = {0};
-  char ARightPart[MAX_INPUT_SIZE + 1] = {0};
-  char BRightPart[MAX_INPUT_SIZE + 1] = {0};
+  char ALeftPart[VAS_INPUT_SIZE_MAX * 2] = {0};
+  char BLeftPart[VAS_INPUT_SIZE_MAX * 2] = {0};
+  char ARightPart[VAS_INPUT_SIZE_MAX + 1] = {0};
+  char BRightPart[VAS_INPUT_SIZE_MAX + 1] = {0};
   int i = 0;
   int j = 0;
   bool whileBreak = false;

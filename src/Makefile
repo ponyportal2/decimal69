@@ -1,9 +1,3 @@
-tezt:
-	gcc -g -Wextra -Wall -Werror *.c -lm
-	cppcheck *.c
-	python3 ../linters/cpplint.py --extensions=c *.c
-	valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all -q ./a.out
-
 teztmac: clean
 	gcc -Wextra -Wall -Werror *.c  -lm
 	cppcheck *.c
@@ -11,6 +5,12 @@ teztmac: clean
 	# leaks -quiet -atExit -- ./a.out > test.log
 	# grep -e "0 total leaked bytes" -e "nodes malloced" -e "leaks Report Version" -v test.log
 	./a.out
+
+tezt:
+	gcc -Wextra -Wall -Werror *.c  -lm
+	cppcheck *.c
+	clang-format --style=Google -i *.c *.h
+	valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all -q ./a.out
 
 tezt_risky:
 	gcc *.c -lm
@@ -24,5 +24,5 @@ make gitaboba:
 	git push origin aboba
 
 clean:
-	rm -f test *.gc* test.info log.xml test.log leak.log
-	rm -f -rf report
+	rm -f test *.gc* test.info log.xml test.log leak.log *.out
+	rm -f -rf report *.out.dSYM
