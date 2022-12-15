@@ -1,9 +1,16 @@
 #define ATOM_SIZE 8
-#define MULT_SUBPRODUCT_SIZE 256
+#define MULT_SUBPRODUCT_SIZE 1024
 #define MAXLINE_FOR_REVERSE 2048
-// #define sint char
+#define MAX_INPUT_SIZE 1024
+#define MAX_ATOMS 1024
+#define MAX_MULT_SUBPRODUCTS 1024
+
+#include <math.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 void decimMulti(char* a, char* b);
 void decimFirstStepMulti(char* a, char* b, char** result);
