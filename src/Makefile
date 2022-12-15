@@ -18,7 +18,7 @@ tezt_risky:
 	valgrind --leak-check=yes -q ./a.out
 
 make gitaboba:
-	git add s21_decimal.c s21_decimal.h Makefile
+	git add s21_decimal.c s21_decimal.h localtest.c Makefile
 	git commit -m "sharkmer: decimal aboba update"
 	git push origin aboba
 
