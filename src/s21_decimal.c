@@ -1,5 +1,34 @@
 #include "s21_decimal.h"
 
+int s21_is_less(s21_decimal value_1, s21_decimal value_2) {
+    int res = 0;
+    int flag1 = 0, sign1 = 0, flag2 = 0, sign2 = 0;
+    char num1[RES_SIZE] = "";
+    char num2[RES_SIZE] = "";
+    if (get_bin_char_flag_and_sign(value_1, num1, &flag1, &sign1) && get_bin_char_flag_and_sign(value_2, num2, &flag2, &sign2)) {
+    //format_num_for_operation(value_1, value_2, num1, num2, &flag1, &flag2, &sign1, &sign2);
+        //reverse(num1);
+        //reverse(num2);
+        int s1 = (int) strlen(num1);
+        int s2 = (int) strlen(num2);
+        res = (flag1 > flag2) ? 1 : 0;
+        if (flag1 == flag2) {
+            res = (s1 < s2) ? pow(0, flag1) : flag1;
+            if (s1 == s2) {
+                res = 0;
+                for (int i = s1; i >= 0; i--) {
+                    if (num1[i] < num2[i]) {
+                        res = 1;
+                    }
+                    if (num1[i] != num2[i]) break;
+                }
+            }
+        }
+    printf("\nn1 = %s n2 = %s\n", num1, num2);
+    }
+    return res;
+}
+
 int bin_char_to_int(char* binNum, int flag, int sign) {
     int val = (int) bin_char_to_float(binNum, flag, sign);
     return val;
@@ -124,6 +153,7 @@ void addZeroAfterSign(char* var, int sign1, int *sign2) {
 void addZeroBeforeNumber(char* var, int size1, int size2) {
     char res[RES_SIZE] = "";
     int dif = size1 - size2;
+    printf("\ns1 = %d\ns2 = %d\n", size1, size2);
     int i = 0;
     res[size1] = '\0';
     for (i = 0; i < dif; i++) {
@@ -135,42 +165,121 @@ void addZeroBeforeNumber(char* var, int size1, int size2) {
     strncpy(var, res, size1);
 }
 
-int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
-    int no_error = 1;
-    return no_error;
+void sub(char* num1, char *num2, char * res) {
+    int count = 0, j = 0, tmp = 0, val = 0;
+    for (int i = (int)strlen(num1) - 1; i >= 0; i--) {
+            if (count == 32) {
+                count = 0;
+                res[j++] = '.';
+            }
+            val = (num1[i] - '0') - (num2[i] - '0') - tmp;
+            if (val >= 0) {
+                res[j++] = val + '0';
+                tmp = 0;
+            } else if (val == -1) {
+                res[j++] = '1';
+                tmp = 1;
+            } else {
+                res[j++] = '0';
+                tmp = 1;
+            }
+            count++;
+        }
+    res[j++] = '\0';
 }
 
-void from_decimal_to_bin_char(s21_decimal src, char* num) {
-    for (int i = 2; i >= 0; i--) {
-        strcat(num, itoa(src.bits[i], 2));
+void div_(char* num1, char *num2, char * res) {
+    printf("\nNUM1 = %s, NUM2 = %s\n", num1, num2);
+    int j = 0, tmp = 0, val = 0, t = 0;
+    int count = 0, n = 0, final = 0;
+    char tmp1[RES_SIZE] = "";
+    char tmp2[RES_SIZE] = "";
+    char tmp3[RES_SIZE] = "";
+    int s1 = (int)strlen(num1);
+    int s2 = (int)strlen(num2);
+    //strcat(num1,)
+    //printf("\nS1 = %d, S2 = %d\n", s1, s2);
+    while (!final)
+    {
+        for (int k = t; k < s2; k++) {
+            if (1) // tmp3 меньше num2 
+            {
+                tmp3[k] = num1[k];
+                t++;
+            } else {
+                k++;
+                tmp3[k] = '\0';
+                sub(tmp3, num2, tmp2);
+                if (1) // tmp2 < num2 
+                {
+
+                }
+            }
+        }
+        if (1) // tmp3 < num2 
+        {
+
+        }
     }
+    //printf("\ntmp = %s\n", tmp1);
+    //tmp1[j++] = '\0';
+    reverse(tmp1);
+    strcpy(res, tmp1);
 }
 
-void format_num_for_operation(s21_decimal value_1, s21_decimal value_2, char* num1, char* num2, int *flag1, int *flag2, int *sign1, int *sign2) {
-    
-    //reverse(num1);
-   // reverse(num2);
-    get_bin_char_flag_and_sign(value_1, num1, flag1, sign1);
-    get_bin_char_flag_and_sign(value_2, num2, flag2, sign2);
-    printf("\nnum1 = %s,\nnum2 = %s\n", num1, num2);
-    if (*sign1 != *sign2) {
-        (*sign1 > *sign2)? addZeroAfterSign(num2, *sign1, sign2) : addZeroAfterSign(num1, *sign2, sign1);
+void mul(char* num1, char *num2, char * res) {
+    int j = 0, tmp = 0, val = 0;
+    int count = 0, n = 0;
+    char tmp1[RES_SIZE] = "";
+    char tmp2[RES_SIZE] = "";
+    for (int k = (int)strlen(num2) - 1; k >= 0; k--) {
+        int t = 0;
+        for (int i = (int)strlen(num1) - 1; i >= 0; i--) {
+            if (count == 32) {
+                count = 0;
+                res[j++] = '.';
+            }
+            val = (num1[i] - '0') * (num2[k] - '0');
+            if (k == (int)strlen(num2) - 1) {
+                tmp1[t++] = val + '0';
+            //printf("\nnum1[%d] = %c\nnum2[%d] = %c\n",i, num1[i], i, num2[i]);
+            } else {
+                tmp2[t++] = val + '0';
+            }
+            count++;
+        }
+        if (k != (int)strlen(num2) - 1) {
+            reverse(tmp1);
+            reverse(tmp2);
+            char tmp3[RES_SIZE] = "";
+            char tmp4[RES_SIZE] = "";
+            strcat(tmp3, tmp2);
+            for (int i = 0; i < n; i++) {
+                tmp3[t++] = '0';
+            }
+            tmp3[t++] = '\0';
+            strcat(tmp4, tmp1);
+            if (strlen(tmp3) > strlen(tmp4)) addZeroBeforeNumber(tmp4, (int)strlen(tmp3), (int)strlen(tmp4));
+            //printf("\ntmp1 = %s\ntmp2 = %s\n\ntmp4 = %s\ntmp3 = %s\n",tmp1, tmp2, tmp4, tmp3);
+            sum(tmp4, tmp3, res);
+            reverse(res);
+            //printf("\nres = %s\n", res);
+            strcpy(tmp1, res);
+            reverse(tmp1);
+        } else {
+
+        //printf("\ntmp1 = %s\n", tmp1);
+        }
+        n++;
     }
-    int size1 = (int) strlen(num1);
-    int size2 = (int) strlen(num2);
-    if (size1 != size2) {
-        (size1 > size2)? addZeroBeforeNumber(num2, size1, size2) : addZeroBeforeNumber(num1, size2, size1);
-    }
-    printf("\nnum1 = %s,\nnum2 = %s\n", num1, num2);
+    //printf("\ntmp = %s\n", tmp1);
+    //tmp1[j++] = '\0';
+   // reverse(tmp1);
+    strcpy(res, tmp1);
 }
 
-int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
-    int no_error = 1;
-    char num1[RES_SIZE] = "";
-    char num2[RES_SIZE] = "";
-    int sign1 = 0, sign2 = 0, flag1 = 0, flag2 = 0;
-    format_num_for_operation(value_1, value_2, num1, num2, &flag1, &flag2, &sign1, &sign2);
-    char res[RES_SIZE] = ""; int j = 0, tmp = 0, val = 0;
+void sum(char* num1, char *num2, char * res) {
+    int j = 0, tmp = 0, val = 0;
     int count = 0;
         for (int i = (int)strlen(num1) - 1; i >= 0; i--) {
             if (count == 32) {
@@ -192,6 +301,75 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
         }
     if (tmp == 1) res[j++] = '1';
     res[j++] = '\0';
+}
+
+int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
+    int no_error = 1;
+    char num1[RES_SIZE] = "";
+    char num2[RES_SIZE] = "";
+    int sign1 = 0, sign2 = 0, flag1 = 0, flag2 = 0;
+    format_num_for_operation(value_1, value_2, num1, num2, &flag1, &flag2, &sign1, &sign2);
+    char res[RES_SIZE] = ""; 
+    sub(num1, num2, res);
+    *result = get_result(res, flag1, sign1);
+    return no_error;
+}
+
+int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
+    int no_error = 1;
+    char num1[RES_SIZE] = "";
+    char num2[RES_SIZE] = "";
+    int sign1 = 0, sign2 = 0, flag1 = 0, flag2 = 0;
+    format_num_for_operation(value_1, value_2, num1, num2, &flag1, &flag2, &sign1, &sign2);
+    char res[RES_SIZE] = ""; 
+    mul(num1, num2, res);
+    *result = get_result(res, flag1, sign1);
+    return no_error;
+}
+
+int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
+    int no_error = 1;
+    char num1[RES_SIZE] = "";
+    char num2[RES_SIZE] = "";
+    int sign1 = 0, sign2 = 0, flag1 = 0, flag2 = 0;
+    format_num_for_operation(value_1, value_2, num1, num2, &flag1, &flag2, &sign1, &sign2);
+    char res[RES_SIZE] = ""; 
+    div_(num1, num2, res);
+    *result = get_result(res, flag1, sign1);
+    return no_error;
+}
+
+void from_decimal_to_bin_char(s21_decimal src, char* num) {
+    for (int i = 2; i >= 0; i--) {
+        strcat(num, itoa(src.bits[i], 2));
+    }
+}
+
+void format_num_for_operation(s21_decimal value_1, s21_decimal value_2, char* num1, char* num2, int *flag1, int *flag2, int *sign1, int *sign2) {
+    //reverse(num1);
+   // reverse(num2);
+    get_bin_char_flag_and_sign(value_1, num1, flag1, sign1);
+    get_bin_char_flag_and_sign(value_2, num2, flag2, sign2);
+    printf("\nnum1 = %s,\nnum2 = %s\n", num1, num2);
+    if (*sign1 != *sign2) {
+        (*sign1 > *sign2)? addZeroAfterSign(num2, *sign1, sign2) : addZeroAfterSign(num1, *sign2, sign1);
+    }
+    int size1 = (int) strlen(num1);
+    int size2 = (int) strlen(num2);
+    if (size1 != size2) {
+        (size1 > size2)? addZeroBeforeNumber(num2, size1, size2) : addZeroBeforeNumber(num1, size2, size1);
+    }
+    printf("\nformatted num1 = %s -> %d, num2 = %s -> %d\n", num1, (int) strtol(num1, NULL, 2), num2, (int) strtol(num2, NULL, 2));
+}
+
+int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
+    int no_error = 1;
+    char num1[RES_SIZE] = "";
+    char num2[RES_SIZE] = "";
+    int sign1 = 0, sign2 = 0, flag1 = 0, flag2 = 0;
+    format_num_for_operation(value_1, value_2, num1, num2, &flag1, &flag2, &sign1, &sign2);
+    char res[RES_SIZE] = ""; 
+    sum(num1, num2, res);
     *result = get_result(res, flag1, sign1);
     return no_error;
 }
@@ -208,7 +386,7 @@ s21_decimal get_result(char * binChar, int flag, int sign) {
 
 void print_s21_decimal(s21_decimal dec) {
     for (int i = 3; i >= 0; i--) {
-        if (dec.bits[i]) printf("\nbits[%d] = %s\n", i, itoa(dec.bits[i], 2));
+        if (dec.bits[i]) printf("\nbits[%d] = %s -> %d\n", i, itoa(dec.bits[i], 2), (int) strtol(itoa(dec.bits[i], 2), NULL, 2));
     }
 }
 
