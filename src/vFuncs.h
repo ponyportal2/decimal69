@@ -12,6 +12,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+size_t s21_strlen(const char* str);
+int s21_add_pos_10String(char* a, char* b, char* result);
+int s21_sub_pos_10String(char* a, char* b, char* result);
 void decimMulti(char* a, char* b);
 void decimFirstStepMulti(char* a, char* b, char** result);
 void reAddZero(char* input, int dotPos);
@@ -21,14 +24,15 @@ int addZerosAndReturnDotPos(char* a, char* b);
 size_t s21_strlen(const char* str);
 void minusTen(char* input);
 void reverseString(char* inputArr);
-void decimFirstStep(char* a, char* b, char** result, bool isSubtraction);
-void decimSecondStepAdd(char** result);
-void reverse(char* string);
+void v10StringFirstStep(char* a, char* b, char** result, bool isSubtraction);
+void v10StringSecondStepAdd(char** result);
+void reverseString(char* string);
 void itoa(long long num, char* src);
 char* get(char** input, int i);
-void printer(char** result);
-int sizeDetector(char** result);
+void matrixPrinter(char** result);
+int matrixSizeDetector(char** result);
 void reverseCharMatrix(char** inputArr, int n);
 void place(int current, char** result, char* tempForItoa, int j);
 void decimSubFirstStep(char* a, char* b, char** result);
-void decimSecondStepSub(char** result);
+void v10StringSecondStepSub(char** result);
+void reverseStringAlt(char* inputArr);

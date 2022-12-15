@@ -7,9 +7,10 @@ tezt:
 teztmac: clean
 	gcc -Wextra -Wall -Werror *.c  -lm
 	cppcheck *.c
-	python3 ../linters/cpplint.py --extensions=c *.c
-	leaks -quiet -atExit -- ./a.out > test.log
-	grep -e "0 total leaked bytes" -e "nodes malloced" -e "leaks Report Version" -v test.log
+	clang-format --style=Google -i *.c *.h
+	# leaks -quiet -atExit -- ./a.out > test.log
+	# grep -e "0 total leaked bytes" -e "nodes malloced" -e "leaks Report Version" -v test.log
+	./a.out
 
 tezt_risky:
 	gcc *.c -lm
