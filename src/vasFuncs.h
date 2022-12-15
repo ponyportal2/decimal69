@@ -13,8 +13,8 @@
 #include <string.h>
 
 size_t s21_strlen(const char* str);
-int s21_add_pos_10String(char* a, char* b, char* result);
-int s21_sub_pos_10String(char* a, char* b, char* result);
+int s21_add_positive_10String(char* a, char* b, char* result);
+int s21_sub_positive_10String(char* a, char* b, char* result);
 void decimMulti(char* a, char* b);
 void decimFirstStepMulti(char* a, char* b, char** result);
 void reAddZero(char* input, int dotPos);

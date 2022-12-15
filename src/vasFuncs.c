@@ -1,6 +1,6 @@
 #include "vasFuncs.h"
 
-int s21_add_pos_10String(char* a, char* b, char* result) {
+int s21_add_positive_10String(char* a, char* b, char* result) {
   // DONT FORGET THAT v10StringFirstStep REQUIRES ADDITION/SUBTRACTION SPECIFIER
   int dotPos = 0;
   char localA[VAS_INPUT_SIZE_MAX + 1] = {0};
@@ -43,7 +43,7 @@ int s21_add_pos_10String(char* a, char* b, char* result) {
 // SUBTRACTION ONLY WORKS IF THE FIRST NUMBER IS BIGGER,
 // IF THE FIRST NUMBER IS SMALLER THEN
 // SWAP THE NUMBERS AND APPEND A MINUS INSTEAD
-int s21_sub_pos_10String(char* a, char* b, char* result) {
+int s21_sub_positive_10String(char* a, char* b, char* result) {
   // DONT FORGET THAT v10StringFirstStep REQUIRES ADDITION/SUBTRACTION SPECIFIER
   int dotPos = 0;
   char localA[VAS_INPUT_SIZE_MAX + 1] = {0};
