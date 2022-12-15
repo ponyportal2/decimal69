@@ -1,10 +1,10 @@
-teztmac: clean
+tezt: clean
 	gcc -Wextra -Wall -Werror *.c  -lm
 	cppcheck *.c *.h
 	clang-format --style=Google -i *.c *.h
 	./a.out
 
-tezt: clean
+teztlinux: clean
 	gcc -Wextra -Wall -Werror *.c  -lm
 	cppcheck *.c *.h
 	clang-format --style=Google -i *.c *.h
