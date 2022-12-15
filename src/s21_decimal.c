@@ -1,14 +1,34 @@
 #include "s21_decimal.h"
 
+int s21_is_less_mod(s21_decimal value_1, s21_decimal value_2) {
+    int res = 0;
+    int flag1 = 0, sign1 = 0, flag2 = 0, sign2 = 0;
+    char num1[RES_SIZE] = "";
+    char num2[RES_SIZE] = "";
+    if (get_bin_char_flag_and_sign(value_1, num1, &flag1, &sign1) && get_bin_char_flag_and_sign(value_2, num2, &flag2, &sign2)) {
+        int s1 = (int) strlen(num1);
+        int s2 = (int) strlen(num2);
+        res = (s1 < s2) ? 1 : 0;
+        if (s1 == s2) {
+            res = 0;
+            for (int i = 0; i < s1; i++) {
+                if (num1[i] + '0' < num2[i] + '0') {
+                    res = 1;
+                }
+                if (num1[i] != num2[i]) break;
+            }
+        }
+    printf("\nn1 = %s -> %d, n2 = %s -> %d\n", num1, (int) strtol(num1, NULL, 2), num2, (int) strtol(num2, NULL, 2));
+    }
+    return res;
+}
+
 int s21_is_less(s21_decimal value_1, s21_decimal value_2) {
     int res = 0;
     int flag1 = 0, sign1 = 0, flag2 = 0, sign2 = 0;
     char num1[RES_SIZE] = "";
     char num2[RES_SIZE] = "";
     if (get_bin_char_flag_and_sign(value_1, num1, &flag1, &sign1) && get_bin_char_flag_and_sign(value_2, num2, &flag2, &sign2)) {
-    //format_num_for_operation(value_1, value_2, num1, num2, &flag1, &flag2, &sign1, &sign2);
-        //reverse(num1);
-        //reverse(num2);
         int s1 = (int) strlen(num1);
         int s2 = (int) strlen(num2);
         res = (flag1 > flag2) ? 1 : 0;
@@ -16,15 +36,15 @@ int s21_is_less(s21_decimal value_1, s21_decimal value_2) {
             res = (s1 < s2) ? pow(0, flag1) : flag1;
             if (s1 == s2) {
                 res = 0;
-                for (int i = s1; i >= 0; i--) {
-                    if (num1[i] < num2[i]) {
+                for (int i = 0; i < s1; i++) {
+                    if ((num1[i] + '0' < num2[i] + '0' && !flag1) || (num1[i] + '0' > num2[i] + '0' && flag1)) {
                         res = 1;
                     }
                     if (num1[i] != num2[i]) break;
                 }
             }
         }
-    printf("\nn1 = %s n2 = %s\n", num1, num2);
+    printf("\nn1 = %s -> %d, n2 = %s -> %d\n", num1, (int) strtol(num1, NULL, 2), num2, (int) strtol(num2, NULL, 2));
     }
     return res;
 }
@@ -50,8 +70,10 @@ float bin_char_to_float(char* binNum, int flag, int sign) {
 
 int get_bin_char_flag_and_sign(s21_decimal src, char* num, int *flag, int *sign) {
     int no_error = 1;
+    //printf("si2 = %d!\n", *sign);
     from_decimal_to_bin_char(src, num);
     getFlagAndPoint(src, flag, sign);
+    //printf("si2 = %d!!!\n", *sign);
     //printf("\nnum = %s\nflag = %d\npoint = %d\n", num, *flag, *sign);
     //reverse(num);
     return no_error;
@@ -310,7 +332,17 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     int sign1 = 0, sign2 = 0, flag1 = 0, flag2 = 0;
     format_num_for_operation(value_1, value_2, num1, num2, &flag1, &flag2, &sign1, &sign2);
     char res[RES_SIZE] = ""; 
-    sub(num1, num2, res);
+    if (flag1 != flag2) {
+        sum(num1, num2, res);
+    } else {
+        if (s21_is_less(value_1, value_2)) {
+            (flag1 == 0) ? sub(num2, num1, res) : sub(num1, num2, res);
+            flag1 = 1;
+        } else {
+            (flag1 == 0) ? sub(num1, num2, res) : sub(num2, num1, res);
+            flag1 = 0;
+        }
+    }
     *result = get_result(res, flag1, sign1);
     return no_error;
 }
@@ -348,9 +380,10 @@ void from_decimal_to_bin_char(s21_decimal src, char* num) {
 void format_num_for_operation(s21_decimal value_1, s21_decimal value_2, char* num1, char* num2, int *flag1, int *flag2, int *sign1, int *sign2) {
     //reverse(num1);
    // reverse(num2);
+   //printf("si2 = %d\n", *sign2);
     get_bin_char_flag_and_sign(value_1, num1, flag1, sign1);
     get_bin_char_flag_and_sign(value_2, num2, flag2, sign2);
-    printf("\nnum1 = %s,\nnum2 = %s\n", num1, num2);
+    printf("\n!num1 = %s, sign = %d, flag = %d\n!num2 = %s, sign = %d, flag = %d\n", num1, *sign1, *flag1, num2, *sign2, *flag2);
     if (*sign1 != *sign2) {
         (*sign1 > *sign2)? addZeroAfterSign(num2, *sign1, sign2) : addZeroAfterSign(num1, *sign2, sign1);
     }
@@ -368,8 +401,18 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     char num2[RES_SIZE] = "";
     int sign1 = 0, sign2 = 0, flag1 = 0, flag2 = 0;
     format_num_for_operation(value_1, value_2, num1, num2, &flag1, &flag2, &sign1, &sign2);
-    char res[RES_SIZE] = ""; 
-    sum(num1, num2, res);
+    char res[RES_SIZE] = "";
+    if (flag1 != flag2) {
+        if (s21_is_less_mod(value_1, value_2)) {
+            sub(num2, num1, res);
+            flag1 = (flag1 == 1) ? 0 : 1;
+        } else {
+            sub(num1, num2, res);
+            flag1 = (flag1 == 1) ? 1 : 0;
+        }
+    } else {
+        sum(num1, num2, res);
+    }
     *result = get_result(res, flag1, sign1);
     return no_error;
 }
@@ -668,13 +711,19 @@ long int parseLongInt(char *value, int *n, int *flag)
 }
 
 void getFlagAndPoint(s21_decimal value, int* flag, int* point) {
+    //printf("\n point!! = %d\n", *point);
     char special[RES_SIZE] = "";
     char N[RES_SIZE] = "";
     strcat(special, itoa(value.bits[3], 2));
+    int check = (int) strlen(special) - 17;
+   // printf("\ncheck = %d\n", check);
     size_t size = strlen(special) - 17;
+    //printf("\nspec = %s, point!! = %d\n", special, *point);
+    if (check > 0) {
+    //printf("\npoint!! = %d\n", *point);
     int j = 0, first = 1, end = 0;
     if (special[0] == '1' && strlen(special) == 32) {*flag = 1;}
-    for (int i = (int)size; i >= 0; i--) {
+    for (int i = (int)size; i >= *flag; i--) {
         if (special[i] == '0' && !first) {
             end = 1;
         }
@@ -686,6 +735,9 @@ void getFlagAndPoint(s21_decimal value, int* flag, int* point) {
     N[j] = '\0';
     for (size_t i = 0; i < strlen(N); i++) { //rewr
         *point += (N[i] - '0') * pow(2, i);
+    }
+    } else {
+        *point = 0;
     }
 }
 
