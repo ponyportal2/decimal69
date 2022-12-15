@@ -74,7 +74,7 @@ int get_bin_char_flag_and_sign(s21_decimal src, char* num, int *flag, int *sign)
     from_decimal_to_bin_char(src, num);
     getFlagAndPoint(src, flag, sign);
     //printf("si2 = %d!!!\n", *sign);
-    //printf("\nnum = %s\nflag = %d\npoint = %d\n", num, *flag, *sign);
+    printf("\nnum = %s\nflag = %d\npoint = %d\n", num, *flag, *sign);
     //reverse(num);
     return no_error;
 }
@@ -377,15 +377,29 @@ void from_decimal_to_bin_char(s21_decimal src, char* num) {
     }
 }
 
+void add_bin_after_pointer(char* num, int *sign1, int sign2) {
+    char res[RES_SIZE] = "";
+        printf("s!!!! = %d %d\n", *sign1, sign2);
+    for (int i = *sign1; i < sign2; i++) {
+        mul(num, "1010", res);
+        printf("!r = %s\n", res);
+        strcpy(num, res);
+    }
+    reverse(num);
+    *sign1 = sign2;
+}
+
 void format_num_for_operation(s21_decimal value_1, s21_decimal value_2, char* num1, char* num2, int *flag1, int *flag2, int *sign1, int *sign2) {
     //reverse(num1);
    // reverse(num2);
    //printf("si2 = %d\n", *sign2);
     get_bin_char_flag_and_sign(value_1, num1, flag1, sign1);
     get_bin_char_flag_and_sign(value_2, num2, flag2, sign2);
-    printf("\n!num1 = %s, sign = %d, flag = %d\n!num2 = %s, sign = %d, flag = %d\n", num1, *sign1, *flag1, num2, *sign2, *flag2);
+    printf("\n!num1 = %s -> %d, sign = %d, flag = %d\n!num2 = %s -> %d, sign = %d, flag = %d\n", 
+    num1, (int) strtol(num1, NULL, 2), *sign1, *flag1, num2,(int) strtol(num2, NULL, 2), *sign2, *flag2);
     if (*sign1 != *sign2) {
-        (*sign1 > *sign2)? addZeroAfterSign(num2, *sign1, sign2) : addZeroAfterSign(num1, *sign2, sign1);
+        printf("s = %d %d\n", *sign1, *sign2);
+        (*sign1 > *sign2) ? add_bin_after_pointer(num2, sign2, *sign1) : add_bin_after_pointer(num1, sign1, *sign2);
     }
     int size1 = (int) strlen(num1);
     int size2 = (int) strlen(num2);
@@ -718,9 +732,9 @@ void getFlagAndPoint(s21_decimal value, int* flag, int* point) {
     int check = (int) strlen(special) - 17;
    // printf("\ncheck = %d\n", check);
     size_t size = strlen(special) - 17;
-    //printf("\nspec = %s, point!! = %d\n", special, *point);
-    if (check > 0) {
-    //printf("\npoint!! = %d\n", *point);
+    printf("\nspec = %s, point!! = %d\n", special, *point);
+    if (check >= 0) {
+    printf("\npoint!! = %d\n", *point);
     int j = 0, first = 1, end = 0;
     if (special[0] == '1' && strlen(special) == 32) {*flag = 1;}
     for (int i = (int)size; i >= *flag; i--) {
