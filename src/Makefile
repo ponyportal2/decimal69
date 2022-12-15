@@ -10,6 +10,9 @@ tezt: clean
 	clang-format --style=Google -i *.c *.h
 	valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all -q ./a.out
 
+cpplinth: clean
+	python3 ../linters/cpplint.py *.h
+
 tezt_risky: clean
 	gcc *.c -lm
 	cppcheck *.c

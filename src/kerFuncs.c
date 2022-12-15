@@ -295,6 +295,7 @@ bool stringToBinaryHelp(const char *decimalString, char *binaryString) {
   }
   return overflow;
 }
+
 bool stringToBinary(const char *decimalString, char *binaryString,
                     int *degree) {
   stringToBinaryHelp(decimalString, binaryString);

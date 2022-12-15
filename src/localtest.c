@@ -1,5 +1,4 @@
-#include "kerFuncs.h"
-#include "vasFuncs.h"
+#include "s21_decimal.h"
 #define TEST_VALUE_SIZE 1024
 
 int main() {
@@ -9,34 +8,49 @@ int main() {
   char mainResult[1024] = {0};
   char* a = "4324234";
   char* b = "326731548612467647833.423423";
-
   // char* a = "875.84758623475897345878784953789";
   // char* b = "46237647823.64762374";
-
   s21_add_pos_10String(a, b, mainResult);
   printf("%s\n", mainResult);
-
   a = "875.84758623475897345878784953789";
   b = "46237647823.64762374";
-
   s21_add_pos_10String(a, b, mainResult);
   printf("%s\n", mainResult);
-
   a = "326731548612467647833.423423";
   b = "4324234";
-
   printf("--------------------------------\n");
   // char* a = "875.84758623475897345878784953789";
   // char* b = "46237647823.64762374";
-
   s21_sub_pos_10String(a, b, mainResult);
   printf("%s\n", mainResult);
-
   a = "46237647823.64762374";
   b = "875.84758623475897345878784953789";
-
   s21_sub_pos_10String(a, b, mainResult);
   printf("%s\n", mainResult);
+
+  printf("--------------------------------\n");
+
+  a = "-46237647823.64762374";
+  printf("Converted back and forth:\n[%s]\n", a);
+
+  char noDotResult[1024] = {0};
+  int tempDegree = 0;
+  int tempSign = 0;
+  dottedToDegree(a, noDotResult, &tempDegree, &tempSign);
+
+  char binaryResult[1024] = {0};
+  stringToBinary(noDotResult, binaryResult, &tempDegree);
+
+  s21_decimal tempDecimal = {0};
+  binaryToDecimal(&tempDecimal, binaryResult, tempDegree, tempSign);
+
+  decimalToBinary(tempDecimal, binaryResult);
+
+  char stringConvertedBackAndForth[1024] = {0};
+  binaryToString(binaryResult, stringConvertedBackAndForth);
+  printf("[%s]\n", stringConvertedBackAndForth);
+
+  printf("--------------------------------\n");
 
   // ----------------------
   // KERENHOR MAIN STARTED:

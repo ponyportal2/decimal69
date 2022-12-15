@@ -3,13 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "decimal_struct.h"
 #define KER_MAX_LENGTH 96
 #define KER_MAX_LENGTH_PART 32
 #define KER_SIZE 1024
-
-typedef struct {
-  unsigned int bits[4];
-} s21_decimal;
 
 unsigned int signDegreeToNumber(int sign, int degree);
 void dottedToDegree(char *strDot, char *noDot, int *degree, int *sign);
