@@ -23,10 +23,21 @@ int s21_is_less_mod(s21_decimal value_1, s21_decimal value_2) {
     return res;
 }
 
+int get_bin_char_size(char* num) {
+    int size = 0, first = 0;
+    for (int i = 0; i < (int) strlen(num); i++) {
+        if (num[i] != '0' && !first) {
+            first = 1;
+        }
+        if (first) size++;
+    }
+    return size;
+}
+
 int num_is_less(char* num1, char* num2, int flag1, int flag2, int sign1, int sign2) {
     int res = 0;
-    int s1 = (int) strlen(num1);
-        int s2 = (int) strlen(num2);
+    int s1 = get_bin_char_size(num1);
+        int s2 = get_bin_char_size(num2);
         res = (flag1 > flag2) ? 1 : 0;
         if (flag1 == flag2) {
             res = (s1 < s2) ? pow(0, flag1) : flag1;
@@ -215,41 +226,57 @@ void sub(char* num1, char *num2, char * res) {
     res[j++] = '\0';
 }
 
+void format_for_div(char* num1, char *num2) { //rewr
+    int size1 = (int) strlen(num1);
+    int size2 = (int) strlen(num2);
+    if (size1 != size2) {
+        (size1 > size2)? addZeroBeforeNumber(num2, size1, size2) : addZeroBeforeNumber(num1, size2, size1);
+    }
+}
+
 void div_(char* num1, char *num2, char * res) {
     printf("\nNUM1 = %s, NUM2 = %s\n", num1, num2);
-    int j = 0, tmp = 0, val = 0, t = 0;
-    int count = 0, n = 0, final = 0;
-    char tmp1[RES_SIZE] = "";
-    char tmp2[RES_SIZE] = "";
+    int tmp = 0, val = 0, t = 0;
+    int count = 0, n = 0, final = 0, point = 0;
+    char ost[RES_SIZE] = "";
     char tmp3[RES_SIZE] = "";
     int s1 = (int)strlen(num1);
     int s2 = (int)strlen(num2);
-    //strcat(num1,)
-    //printf("\nS1 = %d, S2 = %d\n", s1, s2);
+    int i = 0, j = 0;
     while (!final)
     {
-        for (int k = t; k <= s2; k++) {
-            if (num_is_less(tmp3, num2, 0, 0, 0, 0)) // tmp3 меньше num2 
-            {
-                tmp3[k] = num1[k];
-                t++;
-            } else {
-                k++;
-                tmp3[k] = '\0';
-                sub(tmp3, num2, tmp2);
-                printf("---------\nsub(%s, %s) - tmp2 = %s\n",tmp3, num2, tmp2);
-                if (num_is_less(tmp2, num2, 0, 0, 0, 0)) // tmp2 < num2 
-                {
-
-                }
+        count++;
+        while (num_is_less(tmp3, num2, 0, 0, 0, 0))
+        {
+            if (s1 > j) tmp3[i++] = num1[j++];
+            else {
+                tmp3[i++] = '0';
+                res[n++] = '0';
+                point = j;
+                final = 1;
+                break;
             }
         }
-
+        if (!is_empty(tmp3)) res[n++] = '1';
+        format_for_div(tmp3, num2);
+        sub(tmp3, num2, ost);
+        reverse(ost);
+        printf("---------\nsub(%s, %s) - ost = %s -> %d, j = %d\n",tmp3, num2, ost, (int)strtol(ost, NULL, 2), j);
+        if (is_empty(ost) && j >= s1) final = 1;  
+        strcpy(tmp3, ost);
+        i = (int) strlen(ost);
     }
-    //printf("\ntmp = %s\n", tmp1);
-    //tmp1[j++] = '\0';
-    reverse(tmp1);
-    strcpy(res, tmp1);
+    res[n++] = '\0';
+    printf("\nRES = %s\n", res);
+    reverse(res);
+}
+
+int is_empty(char *num) {
+    int res = 1;
+    for(int i = 0; i < (int)strlen(num);i++) {
+        if (num[i] != '0') res = 0;
+    }
+    return res;
 }
 
 void mul(char* num1, char *num2, char * res) {
