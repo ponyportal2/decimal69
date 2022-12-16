@@ -42,12 +42,13 @@ int main() {
   stringToBinary(noDotResult, binaryResult, &tempDegree);
 
   s21_decimal tempDecimal = {0};
+  
   binaryToDecimal(&tempDecimal, binaryResult, tempDegree, tempSign);
-
-  decimalToBinary(tempDecimal, binaryResult);
+char binaryResultNew[1024] = {0};
+  decimalToBinary(tempDecimal, binaryResultNew);
 
   char stringConvertedBackAndForth[1024] = {0};
-  binaryToString(binaryResult, stringConvertedBackAndForth);
+  binaryToString(binaryResultNew, stringConvertedBackAndForth);
   printf("[%s]\n", stringConvertedBackAndForth);
 
   printf("--------------------------------\n");
