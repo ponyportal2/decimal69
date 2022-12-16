@@ -13,6 +13,7 @@ typedef struct
 {
     int bits[4];
 } s21_decimal;
+int num_is_less(char* num1, char* num2, int flag1, int flag2, int sign1, int sign2);
 void add_bin_after_pointer(char* num, int *sign1, int sign2);
 int s21_is_less_mod(s21_decimal value_1, s21_decimal value_2);
 int bin_char_to_int(char* binNum, int flag, int sign);

@@ -5,7 +5,7 @@ int s21_is_less_mod(s21_decimal value_1, s21_decimal value_2) {
     int flag1 = 0, sign1 = 0, flag2 = 0, sign2 = 0;
     char num1[RES_SIZE] = "";
     char num2[RES_SIZE] = "";
-    if (get_bin_char_flag_and_sign(value_1, num1, &flag1, &sign1) && get_bin_char_flag_and_sign(value_2, num2, &flag2, &sign2)) {
+    format_num_for_operation(value_1, value_2, num1, num2, &flag1, &flag2, &sign1, &sign2);
         int s1 = (int) strlen(num1);
         int s2 = (int) strlen(num2);
         res = (s1 < s2) ? 1 : 0;
@@ -18,18 +18,14 @@ int s21_is_less_mod(s21_decimal value_1, s21_decimal value_2) {
                 if (num1[i] != num2[i]) break;
             }
         }
-    printf("\nn1 = %s -> %d, n2 = %s -> %d\n", num1, (int) strtol(num1, NULL, 2), num2, (int) strtol(num2, NULL, 2));
-    }
+    printf("\nn1 = %s -> %d, n2 = %s -> %d\n", num1, 
+    (int) strtol(num1, NULL, 2), num2, (int) strtol(num2, NULL, 2));
     return res;
 }
 
-int s21_is_less(s21_decimal value_1, s21_decimal value_2) {
+int num_is_less(char* num1, char* num2, int flag1, int flag2, int sign1, int sign2) {
     int res = 0;
-    int flag1 = 0, sign1 = 0, flag2 = 0, sign2 = 0;
-    char num1[RES_SIZE] = "";
-    char num2[RES_SIZE] = "";
-    if (get_bin_char_flag_and_sign(value_1, num1, &flag1, &sign1) && get_bin_char_flag_and_sign(value_2, num2, &flag2, &sign2)) {
-        int s1 = (int) strlen(num1);
+    int s1 = (int) strlen(num1);
         int s2 = (int) strlen(num2);
         res = (flag1 > flag2) ? 1 : 0;
         if (flag1 == flag2) {
@@ -45,7 +41,16 @@ int s21_is_less(s21_decimal value_1, s21_decimal value_2) {
             }
         }
     printf("\nn1 = %s -> %d, n2 = %s -> %d\n", num1, (int) strtol(num1, NULL, 2), num2, (int) strtol(num2, NULL, 2));
-    }
+    return res;
+}
+
+int s21_is_less(s21_decimal value_1, s21_decimal value_2) {
+    int res = 0;
+    int flag1 = 0, sign1 = 0, flag2 = 0, sign2 = 0;
+    char num1[RES_SIZE] = "";
+    char num2[RES_SIZE] = "";
+    format_num_for_operation(value_1, value_2, num1, num2, &flag1, &flag2, &sign1, &sign2);  
+    res = num_is_less(num1, num2, flag1, flag2, sign1, sign2);
     return res;
 }
 
@@ -223,8 +228,8 @@ void div_(char* num1, char *num2, char * res) {
     //printf("\nS1 = %d, S2 = %d\n", s1, s2);
     while (!final)
     {
-        for (int k = t; k < s2; k++) {
-            if (1) // tmp3 меньше num2 
+        for (int k = t; k <= s2; k++) {
+            if (num_is_less(tmp3, num2, 0, 0, 0, 0)) // tmp3 меньше num2 
             {
                 tmp3[k] = num1[k];
                 t++;
@@ -232,16 +237,14 @@ void div_(char* num1, char *num2, char * res) {
                 k++;
                 tmp3[k] = '\0';
                 sub(tmp3, num2, tmp2);
-                if (1) // tmp2 < num2 
+                printf("---------\nsub(%s, %s) - tmp2 = %s\n",tmp3, num2, tmp2);
+                if (num_is_less(tmp2, num2, 0, 0, 0, 0)) // tmp2 < num2 
                 {
 
                 }
             }
         }
-        if (1) // tmp3 < num2 
-        {
 
-        }
     }
     //printf("\ntmp = %s\n", tmp1);
     //tmp1[j++] = '\0';
@@ -332,15 +335,18 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     int sign1 = 0, sign2 = 0, flag1 = 0, flag2 = 0;
     format_num_for_operation(value_1, value_2, num1, num2, &flag1, &flag2, &sign1, &sign2);
     char res[RES_SIZE] = ""; 
+    printf("!!!num %s %s\n", num1, num2);
     if (flag1 != flag2) {
         sum(num1, num2, res);
     } else {
-        if (s21_is_less(value_1, value_2)) {
-            (flag1 == 0) ? sub(num2, num1, res) : sub(num1, num2, res);
-            flag1 = 1;
+        if (s21_is_less_mod(value_1, value_2)) {
+            printf("yes\n");
+            sub(num2, num1, res);
+            flag1 = (flag1 == 0) ? 1 : 0;
         } else {
-            (flag1 == 0) ? sub(num1, num2, res) : sub(num2, num1, res);
-            flag1 = 0;
+            printf("no\n");
+            sub(num1, num2, res);
+            flag1 = (flag1 == 0) ? 0 : 1;
         }
     }
     *result = get_result(res, flag1, sign1);
@@ -355,6 +361,7 @@ int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     format_num_for_operation(value_1, value_2, num1, num2, &flag1, &flag2, &sign1, &sign2);
     char res[RES_SIZE] = ""; 
     mul(num1, num2, res);
+    flag1 = (flag1 == flag2) ? 0 : 1;
     *result = get_result(res, flag1, sign1);
     return no_error;
 }
@@ -367,6 +374,7 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     format_num_for_operation(value_1, value_2, num1, num2, &flag1, &flag2, &sign1, &sign2);
     char res[RES_SIZE] = ""; 
     div_(num1, num2, res);
+    flag1 = (flag1 == flag2) ? 0 : 1;
     *result = get_result(res, flag1, sign1);
     return no_error;
 }

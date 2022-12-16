@@ -55,13 +55,13 @@ void parse_test_from_decimal(s21_decimal d1, int intVal, float floatVal, char* b
 int main(void) {
     s21_decimal d1, d2, d3;
     int intVal = 12, flag = 0, sign = 1;
-    float floatVal = 1.2;
-    char binChar[RES_SIZE] = "1101";
+    float floatVal = 0.2;
+    char binChar[RES_SIZE] = "1100";
     parse_test_to_decimal(&d1, &d2, &d3, intVal, floatVal, binChar, flag, sign);
-    sum_test(d2, d1);
+    //sum_test(d2, d1);
     //sub_test(d1, d2);
     //mul_test(d1, d2);
-    //div_test(d1, d2);
+    div_test(d1, d3);
     //is_less_test(d1, d2);
     return 0;
 }
