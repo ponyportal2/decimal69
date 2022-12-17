@@ -7,7 +7,7 @@ s21_decimal dottedToDecimal(char *a) {
 
   char resultWithoutDot[KER_DTD_SIZE] = {0};
   dottedToDegree(a, resultWithoutDot, &tempDegree, &tempSign);
-
+  
   char binaryResult[KER_DTD_SIZE] = {0};
   stringToBinary(resultWithoutDot, binaryResult, &tempDegree);
 
@@ -340,14 +340,15 @@ bool stringToBinary(const char *decimalString, char *binaryString,
   char rememberLast;
   char decimalNew[KER_SIZE] = {0};
   strcpy(decimalNew, decimalString);
-  bool needToRound = false;
+  bool static needToRound = false;
   rememberLast = decimalNew[strlen(decimalNew) - 1];
-  decimalNew[strlen(decimalNew) - 1] = '\0';
+
   // printf("%d\n", *degree);
   if (strlen(binaryString) > 96 && *degree == 0) {
     overflow = true;
   } else if ((strlen(binaryString) > 96 && *degree > 0) ||
              (*degree > 28 && strlen(binaryString) > 1)) {
+    decimalNew[strlen(decimalNew) - 1] = '\0';         
     needToRound = true;
     *degree -= 1;
     for (int i = 0; i < (int)strlen(binaryString); i++) {
@@ -355,6 +356,7 @@ bool stringToBinary(const char *decimalString, char *binaryString,
     }
     // printf("%d ", cycle);
     overflow = stringToBinary(decimalNew, binaryString, degree);
+   // printf("d :%d %s\n", overflow, binaryString);
     // printf("%s\n", binaryString);
   }
   if (needToRound) {
@@ -362,7 +364,7 @@ bool stringToBinary(const char *decimalString, char *binaryString,
   }
   // printf("%s\n", binaryString);
   delZeros(binaryString, decimalNew, degree, &overflow);
-
+needToRound = false;
   // printf("%s\n", binaryString);
   return overflow;
 }
@@ -370,6 +372,7 @@ bool stringToBinary(const char *decimalString, char *binaryString,
 void bankRound(char rememberLast, char *binaryString, char *decimalNew,
                bool *overflow) {
   //  printf("%s\n", decimalNew);
+  
   if (rememberLast > '5' ||
       (rememberLast == '5' && decimalNew[strlen(decimalNew) - 1] % 2 == 1)) {
     int lastNumCounter = 1;
@@ -389,6 +392,7 @@ void bankRound(char rememberLast, char *binaryString, char *decimalNew,
     *overflow = stringToBinaryHelp(decimalNew, binaryString);
     // printf("%s\n", decimalNew);
   }
+  
 }
 
 void delZeros(char *binaryString, char *decimalNew, int *degree,
