@@ -5,50 +5,78 @@ int main() {
   printf("--------------------------------\n");
   printf("VASJAN MAIN:\n");
   printf("--------------------------------\n");
+  // -----------
+  // 10ADIITION:
+  // -----------
   char mainResult[1024] = {0};
   char* a = "4324234";
+  printf("%p\n", a);
   char* b = "326731548612467647833.423423";
   // char* a = "875.84758623475897345878784953789";
   // char* b = "46237647823.64762374";
   s21_add_positive_10String(a, b, mainResult);
   printf("%s\n", mainResult);
   a = "875.84758623475897345878784953789";
+  printf("%p\n", a);
   b = "46237647823.64762374";
   s21_add_positive_10String(a, b, mainResult);
   printf("%s\n", mainResult);
   a = "326731548612467647833.423423";
+  printf("%p\n", a);
   b = "4324234";
   printf("--------------------------------\n");
+  // --------------
+  // 10SUBTRACTION:
+  // --------------
   // char* a = "875.84758623475897345878784953789";
   // char* b = "46237647823.64762374";
   s21_sub_positive_10String(a, b, mainResult);
   printf("%s\n", mainResult);
   a = "46237647823.64762374";
+  printf("%p\n", a);
   b = "875.84758623475897345878784953789";
   s21_sub_positive_10String(a, b, mainResult);
   printf("%s\n", mainResult);
-
   printf("--------------------------------\n");
+  // --------------
+  // s21_add:
+  // --------------
+  a = "875.64762374";
+  b = "875.84758623475897345878784953789";
+  s21_decimal tempDecimal_add = dottedToDecimal(a);
+  s21_decimal tempDecimal_add2 = dottedToDecimal(b);
+  char temp[1024] = {0};
+  decimalToDotted(tempDecimal_add2, temp);
+  printf("b:[%s]\n", temp);
 
+  s21_decimal result_add = {0};
+  char result_add_str[1024] = {0};
+
+  s21_add(tempDecimal_add, tempDecimal_add2, &result_add);
+  decimalToDotted(result_add, result_add_str);
+  printf("ADD RESULT:[%s]\n", result_add_str);
+  printf("--------------------------------\n");
+  // ---------------
+  // BACK AND FORTH:
+  // ---------------
   a = "-46237647823.64762374";
+  printf("%p\n", a);
   printf("Converted back and forth:\n[%s]\n", a);
 
-  char noDotResult[1024] = {0};
-  int tempDegree = 0;
-  int tempSign = 0;
-  dottedToDegree(a, noDotResult, &tempDegree, &tempSign);
-
-  char binaryResult[1024] = {0};
-  stringToBinary(noDotResult, binaryResult, &tempDegree);
-
-  s21_decimal tempDecimal = {0};
-  
-  binaryToDecimal(&tempDecimal, binaryResult, tempDegree, tempSign);
-char binaryResultNew[1024] = {0};
-  decimalToBinary(tempDecimal, binaryResultNew);
+  s21_decimal tempDecimal = dottedToDecimal(a);
 
   char stringConvertedBackAndForth[1024] = {0};
-  binaryToString(binaryResultNew, stringConvertedBackAndForth);
+  decimalToDotted(tempDecimal, stringConvertedBackAndForth);
+
+  // char binaryResultNew[1024] = {0};
+  // decimalToBinary(tempDecimal, binaryResultNew);
+  // char stringTempBeforeFinal[1024] = {0};
+  // binaryToString(binaryResultNew, stringTempBeforeFinal);
+  // char stringConvertedBackAndForth[1024] = {0};
+  // degreeToDotted(stringConvertedBackAndForth, stringTempBeforeFinal,
+  // tempDegree,
+  //                tempSign);
+
   printf("[%s]\n", stringConvertedBackAndForth);
 
   printf("--------------------------------\n");

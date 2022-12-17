@@ -2,7 +2,8 @@ tezt: clean
 	gcc -Wextra -Wall -Werror *.c  -lm
 	cppcheck *.c *.h
 	clang-format --style=Google -i *.c *.h
-	./a.out
+	leaks -quiet -atExit -- ./a.out > test.log
+	grep -e "0 total leaked bytes" -e "nodes malloced" -e "leaks Report Version" -v test.log
 
 teztlinux: clean
 	gcc -Wextra -Wall -Werror *.c  -lm

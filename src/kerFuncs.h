@@ -8,6 +8,12 @@
 #define KER_MAX_LENGTH 96
 #define KER_MAX_LENGTH_PART 32
 #define KER_SIZE 1024
+#define KER_DTD_SIZE 1024
+
+// new from vasjan:
+s21_decimal dottedToDecimal(char *a);
+void decimalToDotted(s21_decimal inputDecimal, char *outputDotted);
+// ----------------
 
 unsigned int signDegreeToNumber(int sign, int degree);
 void dottedToDegree(char *strDot, char *noDot, int *degree, int *sign);
