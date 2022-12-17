@@ -226,8 +226,9 @@ void decimalToBinary(s21_decimal decimal, char *binaryFull) {
       i++;
       decimal.bits[o] = decimal.bits[o] / 2;
     }
-    i = (int)strlen(binaryStack) - 1;
-    while (binaryStack[i] == '0') {
+    binaryStack[i] = '\0';
+    i--;
+    while (i >= 0 && binaryStack[i] == '0') {
       i--;
     }
     for (int j = 31, k = 0; k <= i; k++, j--) {
