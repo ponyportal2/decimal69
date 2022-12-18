@@ -42,7 +42,7 @@ int s21_add_positive_10String(char* a, char* b, char* result) {
 
 // SUBTRACTION ONLY WORKS IF THE FIRST NUMBER IS BIGGER,
 // IF THE FIRST NUMBER IS SMALLER THEN
-// SWAP THE NUMBERS AND APPEND A MINUS INSTEAD
+// SWAP THE NUMBERS AND APPEND A MINUS INSTEAD etc.
 int s21_sub_positive_10String(char* a, char* b, char* result) {
   // DONT FORGET THAT v10StringFirstStep REQUIRES ADDITION/SUBTRACTION SPECIFIER
   int dotPos = 0;

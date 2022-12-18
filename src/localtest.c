@@ -60,8 +60,8 @@ int main() {
   // --------------
   // s21_sub:
   // --------------
-  a = "-875.44762374";
-  b = "-875.84758623475897345878784953789";
+  a = "-4.1";
+  b = "3.1";
   s21_decimal tempDecimal_sub = dottedToDecimal(a);
   s21_decimal tempDecimal_sub2 = dottedToDecimal(b);
   decimalToDotted(tempDecimal_sub2, temp);
@@ -71,7 +71,7 @@ int main() {
   char result_sub_str[1024] = {0};
   s21_sub(tempDecimal_sub, tempDecimal_sub2, &result_sub);
   decimalToDotted(result_sub, result_sub_str);
-  printf("SUB RESULT:[%s] sometimes results in 0, maybe error; UNFINISHED\n",
+  printf("SUB RESULT:[%s] sometimes results in 0, maybe error;\n",
          result_sub_str);
   printf("--------------------------------\n");
   // ---------------

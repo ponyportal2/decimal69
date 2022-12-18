@@ -1,5 +1,7 @@
 #include "kerVasFuncs.h"
 
+#define KERVAS_APPEND_MINUS_SIZE 1024
+
 s21_decimal dottedToDecimal(char *a) {
   int tempDegree = 0;
   int tempSign = 0;
@@ -51,6 +53,8 @@ void dottedAbs(char *input, char *dottedResult) {
   if (strlen(input) > 1) {
     if (input[0] == '-') {
       strcpy(dottedResult, (char *)input + 1);
+    } else {
+      strcpy(dottedResult, input);
     }
   } else {
     printf("SMALL STRING WHEN DOING DOTTED ABS!\n");
@@ -58,15 +62,24 @@ void dottedAbs(char *input, char *dottedResult) {
 }
 
 void appendMinusToDotted(char *input) {
-  char temp[1024] = {0};
+  char temp[KERVAS_APPEND_MINUS_SIZE] = {0};
   if (strlen(input) != 0) {
-    strcpy(temp, (char *)input);
-    printf("[%s]\n", temp);
-    // temp[0] = '-';
+    strcat(temp, "-");
+    strcat(temp, input);
     strcpy(input, temp);
   } else {
     printf("EMPTY STRING WHEN ADDING MINUS!\n");
   }
 }
 
-// dottedIsLess
+bool dottedOnTheLeftIsLess(char *first, char *second) {
+  bool isLess = false;
+
+  s21_decimal firstDec = dottedToDecimal(first);
+  s21_decimal secondDec = dottedToDecimal(second);
+
+  if (s21_is_less(firstDec, secondDec)) {
+    isLess = true;
+  }
+  return isLess;
+}
