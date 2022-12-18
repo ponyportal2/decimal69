@@ -56,3 +56,17 @@ void dottedAbs(char *input, char *dottedResult) {
     printf("SMALL STRING WHEN DOING DOTTED ABS!\n");
   }
 }
+
+void appendMinusToDotted(char *input) {
+  char temp[1024] = {0};
+  if (strlen(input) != 0) {
+    strcpy(temp, (char *)input);
+    printf("[%s]\n", temp);
+    // temp[0] = '-';
+    strcpy(input, temp);
+  } else {
+    printf("EMPTY STRING WHEN ADDING MINUS!\n");
+  }
+}
+
+// dottedIsLess

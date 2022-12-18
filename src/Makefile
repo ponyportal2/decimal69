@@ -6,6 +6,19 @@ tezt: clean
 	leaks -quiet -atExit -- ./a.out > test.log
 	grep -e "0 total leaked bytes" -e "nodes malloced" -e "leaks Report Version" -v test.log
 
+teztfast: clean
+	gcc -Wextra -Wall -Werror *.c  -lm -g
+	cppcheck *.c *.h
+	clang-format --style=Google -i *.c *.h
+	leaks -quiet -atExit -- ./a.out > test.log
+	grep -e "0 total leaked bytes" -e "nodes malloced" -e "leaks Report Version" -v test.log
+
+teztnoleak: clean
+	gcc -Wextra -Wall -Werror *.c  -lm -g
+	cppcheck *.c *.h
+	clang-format --style=Google -i *.c *.h
+	./a.out
+
 teztlinux: clean
 	gcc -Wextra -Wall -Werror *.c  -lm -g
 	cppcheck *.c *.h

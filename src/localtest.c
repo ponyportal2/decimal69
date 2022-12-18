@@ -57,6 +57,23 @@ int main() {
   printf("ADD RESULT:[%s] sometimes results in 0, maybe error\n",
          result_add_str);
   printf("--------------------------------\n");
+  // --------------
+  // s21_sub:
+  // --------------
+  a = "-875.44762374";
+  b = "-875.84758623475897345878784953789";
+  s21_decimal tempDecimal_sub = dottedToDecimal(a);
+  s21_decimal tempDecimal_sub2 = dottedToDecimal(b);
+  decimalToDotted(tempDecimal_sub2, temp);
+  // printf("b:[%s]\n", temp);
+
+  s21_decimal result_sub = {0};
+  char result_sub_str[1024] = {0};
+  s21_sub(tempDecimal_sub, tempDecimal_sub2, &result_sub);
+  decimalToDotted(result_sub, result_sub_str);
+  printf("SUB RESULT:[%s] sometimes results in 0, maybe error; UNFINISHED\n",
+         result_sub_str);
+  printf("--------------------------------\n");
   // ---------------
   // BACK AND FORTH:
   // ---------------
