@@ -50,14 +50,14 @@ bool isDottedNegative(const char *input) {
 }
 
 void dottedAbs(char *input, char *dottedResult) {
-  if (strlen(input) > 1) {
+  if (strlen(input) > 0) {
     if (input[0] == '-') {
       strcpy(dottedResult, (char *)input + 1);
     } else {
       strcpy(dottedResult, input);
     }
   } else {
-    printf("SMALL STRING WHEN DOING DOTTED ABS!\n");
+    printf("EMPTY STRING WHEN DOING DOTTED ABS!\n");
   }
 }
 
@@ -82,4 +82,16 @@ bool dottedOnTheLeftIsLess(char *first, char *second) {
     isLess = true;
   }
   return isLess;
+}
+
+bool dottedOnTheLeftIsGreater(char *first, char *second) {
+  bool isGreater = false;
+
+  s21_decimal firstDec = dottedToDecimal(first);
+  s21_decimal secondDec = dottedToDecimal(second);
+
+  if (s21_is_greater(firstDec, secondDec)) {
+    isGreater = true;
+  }
+  return isGreater;
 }

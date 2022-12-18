@@ -41,8 +41,10 @@ int main() {
   // --------------
   // s21_add:
   // --------------
-  a = "-875.64762374";
-  b = "-875.84758623475897345878784953789";
+  // a = "-875.64762374";
+  // b = "-875.84758623475897345878784953789";
+  a = "4";
+  b = "5";
   s21_decimal tempDecimal_add = dottedToDecimal(a);
   s21_decimal tempDecimal_add2 = dottedToDecimal(b);
   char temp[1024] = {0};
