@@ -34,3 +34,15 @@ void decimalToDotted(s21_decimal inputDecimal, char *outputDotted) {
 
   strcpy(outputDotted, stringConvertedBackAndForth);
 }
+
+bool isDottedNegative(const char *input) {
+  bool returnValue = false;
+  if (strlen(input) != 0) {
+    if (input[0] == '-') {
+      returnValue = true;
+    }
+  } else {
+    printf("EMPTY STRING WHEN CHECKING FOR NEGATIVE!\n");
+  }
+  return returnValue;
+}

@@ -6,6 +6,11 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   char dotted_result[1024] = {0};
   decimalToDotted(value_1, value_1_dotted);
   decimalToDotted(value_2, value_2_dotted);
+
+  if (isDottedNegative(value_1_dotted)) {
+  } else {
+  }
+
   printf("[%s]", value_1_dotted);
   printf("[%s]\n", value_2_dotted);
   s21_add_positive_10String(value_1_dotted, value_2_dotted, dotted_result);
