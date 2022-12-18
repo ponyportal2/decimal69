@@ -46,3 +46,13 @@ bool isDottedNegative(const char *input) {
   }
   return returnValue;
 }
+
+void dottedAbs(char *input, char *dottedResult) {
+  if (strlen(input) > 1) {
+    if (input[0] == '-') {
+      strcpy(dottedResult, (char *)input + 1);
+    }
+  } else {
+    printf("SMALL STRING WHEN DOING DOTTED ABS!\n");
+  }
+}

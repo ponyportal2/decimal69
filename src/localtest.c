@@ -41,8 +41,8 @@ int main() {
   // --------------
   // s21_add:
   // --------------
-  a = "875.64762374";
-  b = "875.84758623475897345878784953789";
+  a = "-875.64762374";
+  b = "-875.84758623475897345878784953789";
   s21_decimal tempDecimal_add = dottedToDecimal(a);
   s21_decimal tempDecimal_add2 = dottedToDecimal(b);
   char temp[1024] = {0};
@@ -54,7 +54,8 @@ int main() {
 
   s21_add(tempDecimal_add, tempDecimal_add2, &result_add);
   decimalToDotted(result_add, result_add_str);
-  printf("ADD RESULT:[%s]\n", result_add_str);
+  printf("ADD RESULT:[%s] sometimes results in 0, maybe error\n",
+         result_add_str);
   printf("--------------------------------\n");
   // ---------------
   // BACK AND FORTH:

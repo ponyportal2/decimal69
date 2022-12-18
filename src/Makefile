@@ -1,5 +1,5 @@
 tezt: clean
-	gcc -Wextra -Wall -Werror *.c  -lm
+	gcc -Wextra -Wall -Werror *.c  -lm -g
 	cppcheck *.c *.h
 	clang-format --style=Google -i *.c *.h
 	python3 cpplint.py --extensions=c *.c *.h
@@ -7,7 +7,7 @@ tezt: clean
 	grep -e "0 total leaked bytes" -e "nodes malloced" -e "leaks Report Version" -v test.log
 
 teztlinux: clean
-	gcc -Wextra -Wall -Werror *.c  -lm
+	gcc -Wextra -Wall -Werror *.c  -lm -g
 	cppcheck *.c *.h
 	clang-format --style=Google -i *.c *.h
 	python3 cpplint.py --extensions=c *.c *.h
