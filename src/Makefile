@@ -2,6 +2,7 @@ tezt: clean
 	gcc -Wextra -Wall -Werror *.c  -lm
 	cppcheck *.c *.h
 	clang-format --style=Google -i *.c *.h
+	python3 cpplint.py --extensions=c *.c *.h
 	leaks -quiet -atExit -- ./a.out > test.log
 	grep -e "0 total leaked bytes" -e "nodes malloced" -e "leaks Report Version" -v test.log
 
@@ -9,16 +10,17 @@ teztlinux: clean
 	gcc -Wextra -Wall -Werror *.c  -lm
 	cppcheck *.c *.h
 	clang-format --style=Google -i *.c *.h
+	python3 cpplint.py --extensions=c *.c *.h
 	valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all -q ./a.out
 
 cpplinth: clean
 	python3 ../linters/cpplint.py *.h
 
-tezt_risky: clean
-	gcc *.c -lm
-	cppcheck *.c
-	python3 ../linters/cpplint.py --extensions=c *.c
-	valgrind --leak-check=yes -q ./a.out
+style:
+	clang-format --style=Google -n *.c *.h
+
+stylef:
+	clang-format --style=Google -i *.c *.h
 
 clean:
 	rm -f test *.gc* test.info log.xml test.log leak.log *.out

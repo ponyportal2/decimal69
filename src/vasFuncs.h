@@ -1,3 +1,5 @@
+#ifndef SRC_VASFUNCS_H_
+#define SRC_VASFUNCS_H_
 #define VAS_ATOM_SIZE 8
 #define VAS_MULTIPLY_SUBPRODUCT_SIZE 1024
 #define VAS_REVERSE_MAXLINE 2048
@@ -36,3 +38,4 @@ void place(int current, char** result, char* tempForItoa, int j);
 void decimSubFirstStep(char* a, char* b, char** result);
 void v10StringSecondStepSub(char** result);
 void reverseStringAlt(char* inputArr);
+#endif  // SRC_VASFUNCS_H_

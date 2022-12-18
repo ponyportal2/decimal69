@@ -1,42 +1,5 @@
 #include "kerFuncs.h"
 
-// new from vasjan:
-s21_decimal dottedToDecimal(char *a) {
-  int tempDegree = 0;
-  int tempSign = 0;
-
-  char resultWithoutDot[KER_DTD_SIZE] = {0};
-  dottedToDegree(a, resultWithoutDot, &tempDegree, &tempSign);
-  
-  char binaryResult[KER_DTD_SIZE] = {0};
-  stringToBinary(resultWithoutDot, binaryResult, &tempDegree);
-
-  s21_decimal tempDecimal = {0};
-  binaryToDecimal(&tempDecimal, binaryResult, tempDegree, tempSign);
-
-  return tempDecimal;
-}
-
-void decimalToDotted(s21_decimal inputDecimal, char *outputDotted) {
-  char binaryResultNew[KER_DTD_SIZE] = {0};
-  int tempDegree = 0;
-  int tempSign = 0;
-
-  findDegreeSign(inputDecimal.bits[3], &tempDegree, &tempSign);
-
-  decimalToBinary(inputDecimal, binaryResultNew);
-
-  char stringTempBeforeFinal[KER_DTD_SIZE] = {0};
-  binaryToString(binaryResultNew, stringTempBeforeFinal);
-
-  char stringConvertedBackAndForth[KER_DTD_SIZE] = {0};
-  degreeToDotted(stringConvertedBackAndForth, stringTempBeforeFinal, tempDegree,
-                 tempSign);
-
-  strcpy(outputDotted, stringConvertedBackAndForth);
-}
-// ----------------
-
 void dottedToDegree(char *strDot, char *noDot, int *degree, int *sign) {
   *sign = 1;
   int j = 0;
@@ -52,7 +15,6 @@ void dottedToDegree(char *strDot, char *noDot, int *degree, int *sign) {
     }
     if (startPlus) {
       *degree = *degree + 1;
-      ;
     }
     noDot[j] = strDot[i];
     j++;
@@ -341,7 +303,7 @@ bool stringToBinary(const char *decimalString, char *binaryString,
   char rememberLast;
   char decimalNew[KER_SIZE] = {0};
   strcpy(decimalNew, decimalString);
-  bool static needToRound = false;
+  static bool needToRound = false;
   rememberLast = decimalNew[strlen(decimalNew) - 1];
 
   // printf("%d\n", *degree);
@@ -349,7 +311,7 @@ bool stringToBinary(const char *decimalString, char *binaryString,
     overflow = true;
   } else if ((strlen(binaryString) > 96 && *degree > 0) ||
              (*degree > 28 && strlen(binaryString) > 1)) {
-    decimalNew[strlen(decimalNew) - 1] = '\0';         
+    decimalNew[strlen(decimalNew) - 1] = '\0';
     needToRound = true;
     *degree -= 1;
     for (int i = 0; i < (int)strlen(binaryString); i++) {
@@ -357,7 +319,7 @@ bool stringToBinary(const char *decimalString, char *binaryString,
     }
     // printf("%d ", cycle);
     overflow = stringToBinary(decimalNew, binaryString, degree);
-   // printf("d :%d %s\n", overflow, binaryString);
+    // printf("d :%d %s\n", overflow, binaryString);
     // printf("%s\n", binaryString);
   }
   if (needToRound) {
@@ -365,7 +327,7 @@ bool stringToBinary(const char *decimalString, char *binaryString,
   }
   // printf("%s\n", binaryString);
   delZeros(binaryString, decimalNew, degree, &overflow);
-needToRound = false;
+  needToRound = false;
   // printf("%s\n", binaryString);
   return overflow;
 }
@@ -373,7 +335,7 @@ needToRound = false;
 void bankRound(char rememberLast, char *binaryString, char *decimalNew,
                bool *overflow) {
   //  printf("%s\n", decimalNew);
-  
+
   if (rememberLast > '5' ||
       (rememberLast == '5' && decimalNew[strlen(decimalNew) - 1] % 2 == 1)) {
     int lastNumCounter = 1;
@@ -393,7 +355,6 @@ void bankRound(char rememberLast, char *binaryString, char *decimalNew,
     *overflow = stringToBinaryHelp(decimalNew, binaryString);
     // printf("%s\n", decimalNew);
   }
-  
 }
 
 void delZeros(char *binaryString, char *decimalNew, int *degree,

@@ -1,3 +1,5 @@
+#ifndef SRC_KERFUNCS_H_
+#define SRC_KERFUNCS_H_
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -9,11 +11,6 @@
 #define KER_MAX_LENGTH_PART 32
 #define KER_SIZE 1024
 #define KER_DTD_SIZE 1024
-
-// new from vasjan:
-s21_decimal dottedToDecimal(char *a);
-void decimalToDotted(s21_decimal inputDecimal, char *outputDotted);
-// ----------------
 
 unsigned int signDegreeToNumber(int sign, int degree);
 void dottedToDegree(char *strDot, char *noDot, int *degree, int *sign);
@@ -67,3 +64,5 @@ int modString(const char *firstString, const char *secondString,
 
 // void stringToDecimal(char *string, s21_decimal *decimal, int degree, int
 // sign); void DecimalToString(s21_decimal decimal, char *decimalString);
+
+#endif  // SRC_KERFUNCS_H_

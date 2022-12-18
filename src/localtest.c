@@ -10,19 +10,19 @@ int main() {
   // -----------
   char mainResult[1024] = {0};
   char* a = "4324234";
-  printf("%p\n", a);
+  // printf("%p\n", a);
   char* b = "326731548612467647833.423423";
   // char* a = "875.84758623475897345878784953789";
   // char* b = "46237647823.64762374";
   s21_add_positive_10String(a, b, mainResult);
   printf("%s\n", mainResult);
   a = "875.84758623475897345878784953789";
-  printf("%p\n", a);
+  // printf("%p\n", a);
   b = "46237647823.64762374";
   s21_add_positive_10String(a, b, mainResult);
   printf("%s\n", mainResult);
   a = "326731548612467647833.423423";
-  printf("%p\n", a);
+  // printf("%p\n", a);
   b = "4324234";
   printf("--------------------------------\n");
   // --------------
@@ -33,7 +33,7 @@ int main() {
   s21_sub_positive_10String(a, b, mainResult);
   printf("%s\n", mainResult);
   a = "46237647823.64762374";
-  printf("%p\n", a);
+  // printf("%p\n", a);
   b = "875.84758623475897345878784953789";
   s21_sub_positive_10String(a, b, mainResult);
   printf("%s\n", mainResult);
@@ -47,7 +47,7 @@ int main() {
   s21_decimal tempDecimal_add2 = dottedToDecimal(b);
   char temp[1024] = {0};
   decimalToDotted(tempDecimal_add2, temp);
-  printf("b:[%s]\n", temp);
+  // printf("b:[%s]\n", temp);
 
   s21_decimal result_add = {0};
   char result_add_str[1024] = {0};
@@ -60,7 +60,7 @@ int main() {
   // BACK AND FORTH:
   // ---------------
   a = "-46237647823.64762374";
-  printf("%p\n", a);
+  // printf("%p\n", a);
   printf("Converted back and forth:\n[%s]\n", a);
 
   s21_decimal tempDecimal = dottedToDecimal(a);
