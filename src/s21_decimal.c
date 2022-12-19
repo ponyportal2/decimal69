@@ -1,14 +1,15 @@
 #include "s21_decimal.h"
+#define DEC_TEMP_VALUE_SIZE 1024
 
 // --------
 // S21_ADD:
 // --------
 int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
-  char value_1_dotted[1024] = {0};
-  char value_2_dotted[1024] = {0};
-  char abs_value_1_dotted[1024] = {0};
-  char abs_value_2_dotted[1024] = {0};
-  char dotted_result[1024] = {0};
+  char value_1_dotted[DEC_TEMP_VALUE_SIZE] = {0};
+  char value_2_dotted[DEC_TEMP_VALUE_SIZE] = {0};
+  char abs_value_1_dotted[DEC_TEMP_VALUE_SIZE] = {0};
+  char abs_value_2_dotted[DEC_TEMP_VALUE_SIZE] = {0};
+  char dotted_result[DEC_TEMP_VALUE_SIZE] = {0};
   decimalToDotted(value_1, value_1_dotted);
   decimalToDotted(value_2, value_2_dotted);
 
@@ -70,11 +71,11 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
 // S21_SUB:
 // --------
 int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
-  char value_1_dotted[1024] = {0};
-  char value_2_dotted[1024] = {0};
-  char abs_value_1_dotted[1024] = {0};
-  char abs_value_2_dotted[1024] = {0};
-  char dotted_result[1024] = {0};
+  char value_1_dotted[DEC_TEMP_VALUE_SIZE] = {0};
+  char value_2_dotted[DEC_TEMP_VALUE_SIZE] = {0};
+  char abs_value_1_dotted[DEC_TEMP_VALUE_SIZE] = {0};
+  char abs_value_2_dotted[DEC_TEMP_VALUE_SIZE] = {0};
+  char dotted_result[DEC_TEMP_VALUE_SIZE] = {0};
   decimalToDotted(value_1, value_1_dotted);
   decimalToDotted(value_2, value_2_dotted);
 

@@ -305,7 +305,8 @@ bool stringToBinary(const char *decimalString, char *binaryString,
   strcpy(decimalNew, decimalString);
   static bool needToRound = false;
   rememberLast = decimalNew[strlen(decimalNew) - 1];
-  int degreeCheck = 0;//4 строчки эти добавил и везде тут *degree на degreeCheck поменял, не знаю сломалось что нет
+  int degreeCheck = 0;  // 4 строчки эти добавил и везде тут *degree на
+                        // degreeCheck поменял, не знаю сломалось что нет
   if (degree != NULL) {
     degreeCheck = *degree;
   }
