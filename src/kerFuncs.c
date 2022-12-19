@@ -305,15 +305,19 @@ bool stringToBinary(const char *decimalString, char *binaryString,
   strcpy(decimalNew, decimalString);
   static bool needToRound = false;
   rememberLast = decimalNew[strlen(decimalNew) - 1];
-
+  int degreeCheck = 0;//4 строчки эти добавил и везде тут *degree на degreeCheck поменял, не знаю сломалось что нет
+  if (degree != NULL) {
+    degreeCheck = *degree;
+  }
   // printf("%d\n", *degree);
-  if (strlen(binaryString) > 96 && *degree == 0) {
+  if (strlen(binaryString) > 96 && degreeCheck == 0) {
     overflow = true;
-  } else if ((strlen(binaryString) > 96 && *degree > 0) ||
-             (*degree > 28 && strlen(binaryString) > 1)) {
+  } else if ((strlen(binaryString) > 96 && degreeCheck > 0) ||
+             (degreeCheck > 28 && strlen(binaryString) > 1)) {
     decimalNew[strlen(decimalNew) - 1] = '\0';
     needToRound = true;
     *degree -= 1;
+    degreeCheck--;
     for (int i = 0; i < (int)strlen(binaryString); i++) {
       binaryString[i] = '\0';
     }
